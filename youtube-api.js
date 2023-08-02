@@ -24,6 +24,8 @@ const fetchChannelIdAndVideoTitles = async (accessToken) => {
   });
 
   const channelId = channelResponse.data.items[0].id;
+  const channelName = channelResponse.data.items[0].snippet.title;
+  //console.log("This is the found user name:", channelResponse.data.items[0].snippet.title);
 
   const response = await youtube.search.list({
     part: "snippet",
@@ -39,6 +41,7 @@ const fetchChannelIdAndVideoTitles = async (accessToken) => {
 
     return {
       channelId: channelId,
+      channelName: channelName,
       videoTitles: videoTitles,
     };
   } catch (error) {
