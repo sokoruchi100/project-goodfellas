@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Navbar from "./Navbar";
 
 function Dashboard() {
   const [videoTitles, setVideoTitles] = useState([]);
@@ -25,6 +26,7 @@ function Dashboard() {
 
   return (
     <div>
+      <Navbar />
       <h1>VIDEOS</h1>
       <ul>
         {videoTitles.map((title, index) => (

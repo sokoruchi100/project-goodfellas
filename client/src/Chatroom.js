@@ -1,8 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Navbar from "./Navbar";
+import socket from "./socket-client";
 
 const Chatroom = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+
+  useEffect(() => {
+    // Emit the "join-room" event
+    socket.emit("join-room", "public-room");
+
+    // Handle incoming messages from the server
+    socket.on("new-message", (message) => {
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { text: message, sender: "server" },
+      ]);
+    });
+
+    // Cleanup the socket connection when the component unmounts
+    return () => {
+      socket.disconnect();
+    };
+  }, []); // The empty dependency array ensures this effect runs only once on mount
 
   const handleInputChange = (event) => {
     setNewMessage(event.target.value);
@@ -11,18 +31,15 @@ const Chatroom = () => {
   const handleSendMessage = () => {
     if (newMessage.trim() !== "") {
       setMessages([...messages, { text: newMessage, sender: "user" }]);
+      // Emit the "send-message" event to the server with the new message
+      socket.emit("send-message", newMessage);
       setNewMessage("");
     }
   };
 
-  // Simulate incoming messages from other users or a chat server
-  // You can replace this with actual socket or server integration for real-time chat
-  const simulateIncomingMessage = () => {
-    setMessages([...messages, { text: "Hello!", sender: "otherUser" }]);
-  };
-
   return (
     <div>
+      <Navbar />
       <div className="chatroom">
         {messages.map((message, index) => (
           <div key={index} className={`message ${message.sender}`}>
@@ -39,9 +56,6 @@ const Chatroom = () => {
         />
         <button onClick={handleSendMessage}>Send</button>
       </div>
-      <button onClick={simulateIncomingMessage}>
-        Simulate Incoming Message
-      </button>
     </div>
   );
 };

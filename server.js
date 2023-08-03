@@ -1,25 +1,36 @@
+const http = require("http");
 const express = require("express");
 const session = require("express-session");
 const crypto = require("crypto");
 const passportSetup = require("./passport-setup"); // Import the passport setup file
 const { fetchChannelIdAndVideoTitles } = require("./youtube-api"); // Import the YouTube API functions
+const initializeSocketServer = require("./socket-server");
+const sharedSession = require("express-socket.io-session");
 
 const app = express();
+const server = http.createServer(app);
+const io = initializeSocketServer(server);
 const port = process.env.PORT || 5000;
 
 // Generate a session secret and reuse it for all sessions
 const sessionSecret = crypto.randomBytes(32).toString("hex");
 
+// Create an Express session and pass it to the WebSocket server
+const sessionMiddleware = session({
+  secret: sessionSecret,
+  resave: true,
+  saveUninitialized: true,
+});
+
 // Initialize passport
-app.use(
-  session({
-    secret: sessionSecret,
-    resave: true,
-    saveUninitialized: true,
-  })
-);
+app.use(sessionMiddleware);
 app.use(passportSetup.initialize());
 app.use(passportSetup.session());
+io.use(
+  sharedSession(sessionMiddleware, {
+    autoSave: true, // Optional, to automatically save sessions to the store
+  })
+);
 
 // Middleware to check if the user is authenticated
 const ensureAuthenticated = (req, res, next) => {
@@ -75,6 +86,6 @@ app.get("/api/videos", ensureAuthenticated, async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+server.listen(port, () => {
+  console.log(`HTTP server is running on port ${port}`);
 });
