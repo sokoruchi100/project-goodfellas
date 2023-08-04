@@ -25,7 +25,8 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "concurrently \"nodemon -r dotenv/config server.js\" \"cd client && npm start\""
+    "start": "concurrently \"nodemon -r dotenv/config server.js\" \"cd client && npm start\"",
+    "build": "cd client && npm run build"
   },
   "author": "",
   "license": "ISC",

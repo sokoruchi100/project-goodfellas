@@ -9,6 +9,7 @@ const sharedSession = require("express-socket.io-session");
 const cors = require("cors");
 const mysql = require("mysql");
 const { channel } = require("diagnostics_channel");
+const path = require("path");
 
 const app = express();
 const server = http.createServer(app);
@@ -16,6 +17,12 @@ const io = initializeSocketServer(server);
 const port = process.env.PORT || 5000;
 
 app.use(cors());
+
+// Serve the output.css file with the correct MIME type
+app.get("/dist/output.css", (req, res) => {
+  res.setHeader("Content-Type", "text/css");
+  res.sendFile(path.resolve(__dirname, "dist", "output.css"));
+});
 
 //When setting up MySQL use the below information
 const con = mysql.createConnection({
