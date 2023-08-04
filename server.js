@@ -13,6 +13,7 @@ const initializeSocketServer = require("./socket-server");
 const con = require("./database/dbConnection");
 const authRoutes = require("./routes/authRoutes");
 const apiRoutes = require("./routes/apiRoutes");
+const ieRoutes = require("./routes/ieRoutes");
 
 const app = express();
 const server = http.createServer(app);
@@ -83,6 +84,34 @@ process.on("SIGINT", () => {
 // Desired input: titles, descriptions, and keywords from the following:
 //    -users previous videos(cap of 10), inputed videos, and trending videos within the niche
 // Ideal ouput: Title, Idea Summary, Keywords, and Similar Videos
+
+//app.use("/inspiration-engine", ieRoutes);
+
+let video = {
+  title: "",
+  description: "",
+  keywords: []
+}
+
+app.use(express.json());
+app.post("/inspiration-engine", (req, res) => {
+    // Retrieve links from user
+
+    const {vid1, vid2, vid3, vid4} = req.body;
+
+    const videos = [vid1, vid2, vid3, vid4];
+    const videoObjs = [];
+
+    console.log(vid1, vid2, vid3, vid4);
+    
+    // loop through videos and make video objects and put them into videoObjs
+    //for (let index = 0; index < videos.length; index++)
+    //{
+      //console.log()
+    //}
+
+
+});
 
 
 server.listen(port, () => {
