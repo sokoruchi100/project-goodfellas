@@ -3,7 +3,7 @@ const express = require("express");
 const session = require("express-session");
 const crypto = require("crypto");
 const passportSetup = require("./passport-setup"); // Import the passport setup file
-const { fetchChannelIdAndVideoTitles } = require("./youtube-api"); // Import the YouTube API functions
+const { fetchChannelDataAndVideoTitles } = require("./youtube-api"); // Import the YouTube API functions
 const initializeSocketServer = require("./socket-server");
 const sharedSession = require("express-socket.io-session");
 const cors = require("cors");
@@ -81,12 +81,13 @@ app.get(
   passportSetup.authenticate("google", { failureRedirect: "/login-failed" }),
   async (req, res) => {
     try {
-      const { channelId, channelName, videoTitles } =
-        await fetchChannelIdAndVideoTitles(req.user.tokens.access_token);
+      const { channelId, channelName, channelPicture, videoTitles } =
+        await fetchChannelDataAndVideoTitles(req.user.tokens.access_token);
 
-      // Currently stored in the session, but will be stored in the database for future use
+      // Session storage, not really necessary, but too scared to delete now
       req.session.channelId = channelId;
       req.session.channelName = channelName;
+      req.session.channelPicture = channelPicture;
       req.session.videoTitles = videoTitles;
 
       //Firstly check if channel id previously exists in our database
@@ -97,10 +98,27 @@ app.get(
           console.log("Database error", error);
           res.status(500).json({ error: "Database error" });
         } else if (result.length == 0) {
-          addUser(channelId, channelName);
-          console.log("Added user: ", channelName);
+          addUser(channelId, channelName, (userId) => {
+            // The callback function will be called with the added user's ID
+            addUserProfile(userId, channelPicture, channelName);
+          });
         } else {
           console.log("User already exists in our database");
+          //Check if UserProfile exists and add if not
+          const querySearchForProfile =
+            "SELECT * FROM UserProfiles WHERE userId=?";
+          con.query(
+            querySearchForProfile,
+            [result[0].id],
+            (userProfileError, userProfileResult) => {
+              if (error) {
+                console.log("Database error", userProfileError);
+                res.status(500).json({ error: "Database error" });
+              } else if (userProfileResult.length == 0) {
+                addUserProfile(result[0].id, channelPicture, channelName);
+              }
+            }
+          );
         }
       });
       res.redirect("http://localhost:3000/dashboard");
@@ -112,7 +130,7 @@ app.get(
   }
 );
 
-function addUser(id, username) {
+function addUser(id, username, callback) {
   //For the date coloumn
   const date = new Date();
   let day = date.getDate();
@@ -131,6 +149,23 @@ function addUser(id, username) {
       res.status(500).json({ error: "Failed to add user" });
     } else {
       console.log("Added User", username);
+      const userId = result.insertId;
+      callback(userId);
+    }
+  });
+}
+
+function addUserProfile(userId, profilePicture, displayName) {
+  const query =
+    "INSERT INTO UserProfiles (userId, profilePicture, displayName, isSubscribed) VALUES (?, ?, ?, ?)";
+  const values = [userId, profilePicture, displayName, false];
+
+  con.query(query, values, (error, result) => {
+    if (error) {
+      console.log("Failed to add userProfile", error);
+      res.status(500).json({ error: "Failed to add userProfile" });
+    } else {
+      console.log("Added UserProfile", displayName);
     }
   });
 }
@@ -152,24 +187,22 @@ app.get("/users", (req, res) => {
   con.query(query, (error, result) => {
     if (error) {
       console.log("Could not retrieve users from database. ", error);
-      res.status(500).json(error, "Failed to get users from database");
+      res.status(500).json({ error: "Failed to get users from the database" });
     } else {
       res.json(result);
     }
   });
 });
 
-// Get all users from user database
-app.get("/users", (req, res) => {
-  const query = "SELECT * FROM Users";
-
-  con.query(query, (error, result) => {
-    if (error) {
-      console.log("Could not retrieve users from database. ", error);
-      res.status(500).json(error, "Failed to get users from database");
+process.on("SIGINT", () => {
+  console.log("Closing MySQL connection...");
+  con.end((err) => {
+    if (err) {
+      console.log("Error closing MySQL connection.", err);
     } else {
-      res.json(result);
+      console.log("MySQL connection closed.");
     }
+    process.exit(0);
   });
 });
 
