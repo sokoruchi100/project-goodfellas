@@ -1,9 +1,8 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./Login";
-
+import Explore from "./Explore";
 import Dashboard from "./Dashboard";
-import Chatroom from "./Chatroom";
 
 function App() {
   return (
@@ -15,8 +14,8 @@ function App() {
         {/* Route for the dashboard page */}
         <Route path="/dashboard" element={<Dashboard />} />
 
-        {/* Add other routes here */}
-        <Route path="/chatroom" element={<Chatroom />} />
+        {/* Route for the explore page */}
+        <Route path="/communities/explore" element={<Explore />} />
       </Routes>
     </Router>
   );
