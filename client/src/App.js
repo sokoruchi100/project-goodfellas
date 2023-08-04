@@ -1,9 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./Login";
-
-import Dashboard from "./Dashboard";
-import Chatroom from "./Chatroom";
+import InspirationEngine from './InspirationEngine.js';
+import Dashboard from "./Dashboard.js";
+import Chatroom from "./Chatroom.js";
 
 function App() {
   return (
@@ -17,6 +17,8 @@ function App() {
 
         {/* Add other routes here */}
         <Route path="/chatroom" element={<Chatroom />} />
+
+        <Route path="/InspirationEngine" element={<InspirationEngine />} />
       </Routes>
     </Router>
   );

@@ -206,6 +206,13 @@ process.on("SIGINT", () => {
   });
 });
 
+
+// Inspiration Engine
+// Desired input: titles, descriptions, and keywords from the following:
+//    -users previous videos(cap of 10), inputed videos, and trending videos within the niche
+// Ideal ouput: Title, Idea Summary, Keywords, and Similar Videos
+
+
 server.listen(port, () => {
   console.log(`HTTP server is running on port ${port}`);
 });
