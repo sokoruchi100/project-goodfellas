@@ -5,7 +5,7 @@ require("dotenv").config({
   path: path.resolve(__dirname, ".env"),
 });
 const oAuthClient = new OAuth2Client({
-  clientId: process.env.GOOGLE_CLIENT_ID,
+  clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
   redirectUri: "http://localhost:5000/auth/google/callback",
 });
