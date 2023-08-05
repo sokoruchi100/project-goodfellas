@@ -16,8 +16,12 @@ const Chatroom = () => {
     socket.on("new-message", (message) => {
       setMessages((prevMessages) => [
         ...prevMessages,
-        { text: message, sender: "server" },
+        { senderId: 0, content: message, timeStamp: new Date() },
       ]);
+    });
+
+    socket.on("load-messages", (messages) => {
+      setMessages(messages);
     });
 
     // Scroll to the bottom whenever messages update
@@ -40,7 +44,7 @@ const Chatroom = () => {
       //If new message isn't blank, add it to messages
       setMessages((prevMessages) => [
         ...prevMessages,
-        { text: newMessage, sender: "user" },
+        { senderId: 1, content: newMessage, timeStamp: new Date() },
       ]);
       // Emit the "send-message" event to the server with the new message
       socket.emit("send-message", { room: roomCode, message: newMessage });

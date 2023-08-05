@@ -11,6 +11,8 @@ const path = require("path");
 const passportSetup = require("./passport-setup"); // Import the passport setup file
 const initializeSocketServer = require("./socket-server");
 const con = require("./database/dbConnection");
+
+//Routes
 const authRoutes = require("./routes/authRoutes");
 const apiRoutes = require("./routes/apiRoutes");
 const ieRoutes = require("./routes/ieRoutes");
@@ -32,6 +34,7 @@ const sessionMiddleware = session({
 
 app.use(cors());
 app.use(express.json());
+
 // Initialize passport
 app.use(sessionMiddleware);
 app.use(passportSetup.initialize());
@@ -42,12 +45,13 @@ io.use(
   })
 );
 
-// Your authRoutes
+// authRoutes
 app.use("/auth", authRoutes);
 
-// Your apiRoutes
+// apiRoutes
 app.use("/api", apiRoutes);
 
+//ieRoutes
 app.use("/inspiration-engine", ieRoutes);
 
 // Serve the output.css file with the correct MIME type
