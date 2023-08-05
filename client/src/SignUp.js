@@ -1,24 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Navigate } from "react-router-dom"; // Import Link and Redirect from react-router-dom
 import axios from "axios"; // Import axios
 import GoogleLoginButton from "./GoogleLoginButton";
 
-const SignUp = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
+const SignUp = ({ isAuthenticated, handleAuthentication }) => {
   useEffect(() => {
     // Make an API call to check if the user is authenticated
     axios
-      .get("/api/ensure-auth", { withCredentials: true }) // Use withCredentials to include cookies in the request
+      .get("/api/ensure-auth", { withCredentials: true })
       .then((response) => {
-        if (response.data.isAuthenticated) {
-          setIsAuthenticated(true);
-        }
+        handleAuthentication(response.data.isAuthenticated);
       })
       .catch((error) => {
         console.error("Error checking authentication:", error);
       });
-  }, []);
+  }, [isAuthenticated]);
+
   const handleGoogleLogin = () => {
     // Replace "http://localhost:5000/auth/google" with your backend API endpoint for Google OAuth
     window.location.href = "http://localhost:5000/auth/google";

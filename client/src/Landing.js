@@ -2,22 +2,18 @@ import React, { useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom"; // Import Link and Redirect from react-router-dom
 import axios from "axios"; // Import axios
 
-const Landing = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
+const Landing = ({ isAuthenticated, handleAuthentication }) => {
   useEffect(() => {
     // Make an API call to check if the user is authenticated
     axios
-      .get("/api/ensure-auth", { withCredentials: true }) // Use withCredentials to include cookies in the request
+      .get("/api/ensure-auth", { withCredentials: true })
       .then((response) => {
-        if (response.data.isAuthenticated) {
-          setIsAuthenticated(true);
-        }
+        handleAuthentication(response.data.isAuthenticated);
       })
       .catch((error) => {
         console.error("Error checking authentication:", error);
       });
-  }, []);
+  }, [isAuthenticated]);
 
   return (
     <div>

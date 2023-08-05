@@ -1,7 +1,24 @@
 import React from "react";
-import { Link } from "react-router-dom"; // Assuming you are using React Router for navigation
+import { Link, useNavigate } from "react-router-dom"; // Assuming you are using React Router for navigation
+import axios from "axios";
 
-const Navbar = () => {
+const Navbar = ({ handleAuthentication }) => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Make an API call to logout
+    axios
+      .get("/auth/logout", { withCredentials: true })
+      .then(() => {
+        // On successful logout, navigate to the landing page
+        handleAuthentication(false);
+        navigate("/"); // Redirect to the landing page
+      })
+      .catch((error) => {
+        console.error("Error during logout:", error);
+      });
+  };
+
   return (
     <nav>
       <ul>
@@ -10,6 +27,9 @@ const Navbar = () => {
         </li>
         <li>
           <Link to="/communities/explore">Explore</Link>
+        </li>
+        <li>
+          <button onClick={handleLogout}>Log out</button>
         </li>
       </ul>
     </nav>

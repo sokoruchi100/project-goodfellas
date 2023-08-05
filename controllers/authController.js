@@ -56,6 +56,18 @@ const handleGoogleCallback = async (req, res) => {
   }
 };
 
+const logout = (req, res) => {
+  // Passport provides a logout() function to clear the user session
+  req.logout(function (err) {
+    if (err) {
+      console.error("Error while logging out:", err);
+      return res.status(500).json({ message: "Logout failed" });
+    }
+    res.json({ message: "Logout successful" }); // Send response back to client
+  });
+};
+
 module.exports = {
   handleGoogleCallback,
+  logout,
 };

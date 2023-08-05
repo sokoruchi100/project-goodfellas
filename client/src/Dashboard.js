@@ -1,9 +1,24 @@
 import React, { useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
 import Navbar from "./Navbar";
+import axios from "axios";
 
-function Dashboard() {
+function Dashboard({ isAuthenticated, handleAuthentication }) {
   const [videoTitles, setVideoTitles] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
+
+  useEffect(() => {
+    console.log("isAuthenticated has changed to: " + isAuthenticated);
+    // Make an API call to check if the user is authenticated
+    axios
+      .get("/api/ensure-auth", { withCredentials: true })
+      .then((response) => {
+        handleAuthentication(response.data.isAuthenticated);
+      })
+      .catch((error) => {
+        console.error("Error checking authentication:", error);
+      });
+  }, [isAuthenticated]);
 
   useEffect(() => {
     fetch("/api/videos")
@@ -26,7 +41,7 @@ function Dashboard() {
 
   return (
     <div>
-      <Navbar />
+      <Navbar handleAuthentication={handleAuthentication} />
       <h1>VIDEOS</h1>
       <ul>
         {videoTitles.map((title, index) => (
@@ -47,6 +62,7 @@ function Dashboard() {
           />
         </div>
       )}
+      {!isAuthenticated && <Navigate to="/" />}
     </div>
   );
 }

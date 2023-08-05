@@ -1,12 +1,30 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom"; // Import useParams to get the community ID from the URL
+import React, { useState, useEffect, useCallback } from "react";
+import { useParams, Navigate } from "react-router-dom"; // Import useParams to get the community ID from the URL
 import Navbar from "./Navbar";
+import axios from "axios";
 import socket from "./socket-client";
 
-const Chatroom = () => {
+const Chatroom = ({ isAuthenticated, handleAuthentication }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const { roomCode } = useParams(); // Get the roomCode from the URL parameter
+
+  const memoizedHandleAuthentication = useCallback(handleAuthentication, [
+    handleAuthentication,
+  ]);
+
+  useEffect(() => {
+    console.log("isAuthenticated has changed to: " + isAuthenticated);
+    // Make an API call to check if the user is authenticated
+    axios
+      .get("/api/ensure-auth", { withCredentials: true })
+      .then((response) => {
+        memoizedHandleAuthentication(response.data.isAuthenticated);
+      })
+      .catch((error) => {
+        console.error("Error checking authentication:", error);
+      });
+  }, [memoizedHandleAuthentication, isAuthenticated]);
 
   useEffect(() => {
     // Emit the "join-community" event
@@ -59,7 +77,7 @@ const Chatroom = () => {
 
   return (
     <div>
-      <Navbar />
+      <Navbar handleAuthentication={handleAuthentication} />
       <div className="chatroom">
         <h1>Chatroom {roomCode}</h1>
         {messages.map((message, index) => (
@@ -79,6 +97,7 @@ const Chatroom = () => {
           <button type="submit">Send</button>
         </form>
       </div>
+      {!isAuthenticated && <Navigate to="/" />}
     </div>
   );
 };

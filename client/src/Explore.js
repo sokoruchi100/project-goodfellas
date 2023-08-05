@@ -1,10 +1,23 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom"; // Import Link from react-router-dom
+import { Link, Navigate } from "react-router-dom"; // Import Link from react-router-dom
 import Navbar from "./Navbar";
 
-const Explore = () => {
+const Explore = ({ isAuthenticated, handleAuthentication }) => {
   const [communities, setCommunities] = useState([]);
+
+  useEffect(() => {
+    console.log("isAuthenticated has changed to: " + isAuthenticated);
+    // Make an API call to check if the user is authenticated
+    axios
+      .get("/api/ensure-auth", { withCredentials: true })
+      .then((response) => {
+        handleAuthentication(response.data.isAuthenticated);
+      })
+      .catch((error) => {
+        console.error("Error checking authentication:", error);
+      });
+  }, [isAuthenticated]);
 
   useEffect(() => {
     // Fetch data from the backend API for communities
@@ -20,7 +33,7 @@ const Explore = () => {
 
   return (
     <div>
-      <Navbar />
+      <Navbar handleAuthentication={handleAuthentication} />
       <h1>Explore Communities</h1>
       <ul>
         {communities.map((community) => (
@@ -36,6 +49,7 @@ const Explore = () => {
           </li>
         ))}
       </ul>
+      {!isAuthenticated && <Navigate to="/" />}
     </div>
   );
 };
