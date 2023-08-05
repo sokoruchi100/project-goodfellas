@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./Login";
 import InspirationEngine from './InspirationEngine.js';
 import Dashboard from "./Dashboard.js";
-import Chatroom from "./Chatroom.js";
+import Explore from "./Explore";
 
 function App() {
   return (
@@ -14,11 +14,12 @@ function App() {
 
         {/* Route for the dashboard page */}
         <Route path="/dashboard" element={<Dashboard />} />
-
-        {/* Add other routes here */}
-        <Route path="/chatroom" element={<Chatroom />} />
-
+          
+        {/* Route for the inspiration page */}
         <Route path="/InspirationEngine" element={<InspirationEngine />} />
+          
+        {/* Route for the explore page */}
+        <Route path="/communities/explore" element={<Explore />} />
       </Routes>
     </Router>
   );

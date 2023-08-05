@@ -9,7 +9,7 @@ const Navbar = () => {
           <Link to="/dashboard">Dashboard</Link>
         </li>
         <li>
-          <Link to="/chatroom">Chatroom</Link>
+          <Link to="/communities/explore">Explore</Link>
         </li>
       </ul>
     </nav>
