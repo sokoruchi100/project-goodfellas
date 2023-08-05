@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./Login";
 import Explore from "./Explore";
 import Dashboard from "./Dashboard";
+import Chatroom from "./Chatroom";
 
 function App() {
   return (
@@ -16,6 +17,9 @@ function App() {
 
         {/* Route for the explore page */}
         <Route path="/communities/explore" element={<Explore />} />
+
+        {/* Route for the chatroom page */}
+        <Route path="/communities/chatroom/:roomCode" element={<Chatroom />} />
       </Routes>
     </Router>
   );

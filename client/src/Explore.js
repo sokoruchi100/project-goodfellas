@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom"; // Import Link from react-router-dom
 import Navbar from "./Navbar";
 
 const Explore = () => {
@@ -24,7 +25,9 @@ const Explore = () => {
       <ul>
         {communities.map((community) => (
           <li key={community.id}>
-            <h2>{community.communityName}</h2>
+            <Link to={`/communities/chatroom/${community.roomCode}`}>
+              <h2>{community.communityName}</h2>
+            </Link>
             <p>{community.description}</p>
             <p>{community.isPublic ? "Public" : "Private"}</p>
             <p>Room Code: {community.roomCode}</p>

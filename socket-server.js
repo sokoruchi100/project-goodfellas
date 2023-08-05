@@ -20,18 +20,16 @@ function initializeSocketServer(server) {
     console.log("A user connected:", socket.id);
 
     // Handle WebSocket events here
-    socket.on(EVENTS.JOIN_COMMUNITY, (message) => {
-      console.log("A user joined a community:", message);
+    socket.on(EVENTS.JOIN_COMMUNITY, (roomCode) => {
+      console.log("A user joined a community:", roomCode);
       // Implement room joining logic here based on the "message" parameter
-      const room = message.room; // Assuming the message contains a "room" property
-      socket.join(room);
+      socket.join(roomCode);
     });
 
     // Handle "send-message" event
-    socket.on(EVENTS.SEND_MESSAGE, (message) => {
+    socket.on(EVENTS.SEND_MESSAGE, ({ room, message }) => {
       console.log("Received message:", message);
       // Broadcast the message to all clients in the room
-      const room = message.room; // Assuming the message contains a "room" property
       socket.to(room).emit(EVENTS.NEW_MESSAGE, message);
     });
 

@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom"; // Import useParams to get the community ID from the URL
 import Navbar from "./Navbar";
 import socket from "./socket-client";
 
 const Chatroom = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const { roomCode } = useParams(); // Get the roomCode from the URL parameter
 
   useEffect(() => {
-    // Emit the "join-room" event
-    socket.emit("join-room", "public-room");
+    // Emit the "join-community" event
+    socket.emit("join-community", roomCode);
 
     // Handle incoming messages from the server
     socket.on("new-message", (message) => {
@@ -18,29 +20,44 @@ const Chatroom = () => {
       ]);
     });
 
+    // Scroll to the bottom whenever messages update
+    scrollToBottom();
+
     // Cleanup the socket connection when the component unmounts
     return () => {
-      socket.disconnect();
+      // Remove the "new-message" event listener when the component unmounts
+      socket.off("new-message");
     };
-  }, []); // The empty dependency array ensures this effect runs only once on mount
+  }, [roomCode]); // Include roomCode in the dependency array
 
   const handleInputChange = (event) => {
     setNewMessage(event.target.value);
   };
 
-  const handleSendMessage = () => {
+  const handleSendMessage = (event) => {
+    event.preventDefault(); // Prevent form submission
     if (newMessage.trim() !== "") {
-      setMessages([...messages, { text: newMessage, sender: "user" }]);
+      //If new message isn't blank, add it to messages
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { text: newMessage, sender: "user" },
+      ]);
       // Emit the "send-message" event to the server with the new message
-      socket.emit("send-message", newMessage);
+      socket.emit("send-message", { room: roomCode, message: newMessage });
       setNewMessage("");
     }
+  };
+
+  const scrollToBottom = () => {
+    const chatroom = document.querySelector(".chatroom");
+    chatroom.scrollTop = chatroom.scrollHeight;
   };
 
   return (
     <div>
       <Navbar />
       <div className="chatroom">
+        <h1>Chatroom {roomCode}</h1>
         {messages.map((message, index) => (
           <div key={index} className={`message ${message.sender}`}>
             {message.text}
@@ -48,13 +65,15 @@ const Chatroom = () => {
         ))}
       </div>
       <div className="input-container">
-        <input
-          type="text"
-          value={newMessage}
-          onChange={handleInputChange}
-          placeholder="Type your message..."
-        />
-        <button onClick={handleSendMessage}>Send</button>
+        <form onSubmit={handleSendMessage}>
+          <input
+            type="text"
+            value={newMessage}
+            onChange={handleInputChange}
+            placeholder="Type your message..."
+          />
+          <button type="submit">Send</button>
+        </form>
       </div>
     </div>
   );
