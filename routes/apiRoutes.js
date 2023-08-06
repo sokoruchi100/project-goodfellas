@@ -2,13 +2,16 @@ const express = require("express");
 const router = express.Router();
 const { ensureAuthenticated } = require("../middleware/authMiddleware");
 const apiController = require("../controllers/apiController");
-const { getUserIdByChannelId } = require("../database/userQueries"); // Import the userQueries file
 const {
-  getCommunityIdByRoomCode,
+  getUserIdByChannelId,
+  getUserIdByName,
+} = require("../database/userQueries"); // Import the userQueries file
+const {
   checkIfUserIsMember,
   addMemberToCommunity,
   checkIfCommunityIsPrivate,
   checkIfUserIsOwner,
+  checkIfUserIsAlreadyMember,
 } = require("../database/communityQueries");
 
 // Endpoint to get all video titles from the user's YouTube channel
@@ -58,7 +61,14 @@ router.get("/has-joined/:roomCode/:userId", async (req, res) => {
 // Route to add a user to the Membership table
 router.post("/add-to-membership", async (req, res) => {
   const { userId, roomCode } = req.body;
+  console.log("USER ID:" + userId);
   try {
+    const isAlreadyMember = await checkIfUserIsAlreadyMember(userId);
+    if (isAlreadyMember) {
+      return res
+        .status(200)
+        .json({ success: false, message: "User is already a member" });
+    }
     await addMemberToCommunity(userId, roomCode);
     res.status(200).json({ success: true });
   } catch (error) {
@@ -94,6 +104,21 @@ router.get("/is-owner/:roomCode/:userId", async (req, res) => {
     res.status(200).json({ isOwner });
   } catch (error) {
     res.status(500).json({ error: "Failed to check if user is the owner" });
+  }
+});
+
+// Route to find a user by name
+router.post("/find-user", async (req, res) => {
+  const { name } = req.body;
+  try {
+    const userId = await getUserIdByName(name);
+    if (userId) {
+      res.status(200).json({ userId });
+    } else {
+      res.status(200).json({ error: "No user found with the given name" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch user" });
   }
 });
 

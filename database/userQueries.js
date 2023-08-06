@@ -58,8 +58,25 @@ function getUserIdByChannelId(channelId, callback) {
   });
 }
 
+// Helper function to get user ID by name
+function getUserIdByName(name) {
+  const query = "SELECT id FROM Users WHERE channelName = ?";
+  return new Promise((resolve, reject) => {
+    con.query(query, [name], (error, results) => {
+      if (error) {
+        reject(error);
+      } else if (results.length > 0) {
+        resolve(results[0].id); // Assuming 'id' is the column name for user IDs
+      } else {
+        resolve(null);
+      }
+    });
+  });
+}
+
 module.exports = {
   addUser,
   addUserProfile,
   getUserIdByChannelId,
+  getUserIdByName,
 };

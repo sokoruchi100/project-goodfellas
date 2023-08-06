@@ -1,42 +1,33 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom"; // Import useParams to get the community ID from the URL
 import axios from "axios"; // Assuming you are using axios for HTTP requests
 
 const AddUserComponent = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [usersList, setUsersList] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [isAdded, setIsAdded] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [message, setMessage] = useState(""); // for user feedback
 
-  const handleSearchChange = async (e) => {
-    setSearchTerm(e.target.value);
-    if (searchTerm.length > 2) {
-      // Start search after 3 characters for optimization
-      try {
-        const response = await axios.get(
-          `/api/search-users?displayName=${searchTerm}`
-        );
-        setUsersList(response.data.users);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    } else {
-      setUsersList([]); // Clear user list if searchTerm is too short
-    }
-  };
+  const { roomCode } = useParams();
 
   const handleAddMember = async () => {
-    if (selectedUser) {
-      try {
-        const response = await axios.post(`/api/add-member`, {
-          userId: selectedUser.id,
+    try {
+      const response = await axios.post(`/api/find-user`, { name: userName });
+      const userId = response.data.userId;
+
+      if (userId) {
+        const addResponse = await axios.post(`/api/add-to-membership`, {
+          userId: userId,
+          roomCode: roomCode,
         });
-        if (response.data.success) {
-          setIsAdded(true);
-          // You might want to add notifications or messages for user feedback
+        if (addResponse.data.success) {
+          setMessage("User has been added");
+        } else if (addResponse.data.message === "User is already a member") {
+          setMessage("User is already a member");
         }
-      } catch (error) {
-        console.error("Error adding user to community:", error);
+      } else {
+        setMessage("No user found with the given name");
       }
+    } catch (error) {
+      console.error("Error:", error);
     }
   };
 
@@ -44,18 +35,12 @@ const AddUserComponent = () => {
     <div>
       <input
         type="text"
-        value={searchTerm}
-        onChange={handleSearchChange}
+        value={userName}
         placeholder="Search for a user"
+        onChange={(e) => setUserName(e.target.value)}
       />
-      {usersList.map((user) => (
-        <div key={user.id} onClick={() => setSelectedUser(user)}>
-          {user.displayName}
-        </div>
-      ))}
-      {selectedUser && (
-        <button onClick={handleAddMember}>Add User to Community</button>
-      )}
+      <button onClick={handleAddMember}>Add User to Community</button>
+      <p>{message}</p>
     </div>
   );
 };
