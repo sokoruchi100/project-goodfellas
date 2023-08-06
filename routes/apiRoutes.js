@@ -34,4 +34,7 @@ router.get("/user-id", (req, res) => {
   });
 });
 
+// Route to create a new chatroom
+router.post("/create-community", apiController.createCommunity);
+
 module.exports = router;
