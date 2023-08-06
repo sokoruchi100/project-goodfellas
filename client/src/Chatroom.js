@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useParams, Navigate } from "react-router-dom"; // Import useParams to get the community ID from the URL
+import { useParams, Navigate, useNavigate } from "react-router-dom"; // Import useParams to get the community ID from the URL
 import Navbar from "./Navbar";
 import axios from "axios";
 import socket from "./socket-client";
 
 const Chatroom = ({ isAuthenticated, handleAuthentication }) => {
+  const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [userId, setUserId] = useState(0);
@@ -21,14 +22,30 @@ const Chatroom = ({ isAuthenticated, handleAuthentication }) => {
       .then((response) => {
         const userId = response.data.userId;
         setUserId(userId);
-        axios
-          .post("/api/add-to-membership", {
-            userId: userId,
-            roomCode: roomCode,
-          })
-          .catch((error) => {
-            console.error("Error joining community:", error);
-          });
+        axios.get(`/api/has-joined/${roomCode}/${userId}`).then((res) => {
+          if (res.data.hasJoined) {
+            // User is already a member
+            return;
+          } else {
+            // User is not a member. Check if the community is private
+            axios.get(`/api/is-private/${roomCode}`).then((res) => {
+              if (res.data.isPrivate) {
+                // Redirect user to the explore page
+                navigate("/communities/explore");
+              } else {
+                // Add user to the membership table as it's a public community
+                axios
+                  .post("/api/add-to-membership", {
+                    userId: userId,
+                    roomCode: roomCode,
+                  })
+                  .catch((error) => {
+                    console.error("Error joining community:", error);
+                  });
+              }
+            });
+          }
+        });
       })
       .catch((error) => {
         console.error("Error fetching user ID:", error);

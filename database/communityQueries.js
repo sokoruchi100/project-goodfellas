@@ -116,6 +116,39 @@ async function addMemberToCommunity(userId, roomCode) {
   }
 }
 
+function addMemberWithCommunityId(communityId, userId, callback) {
+  const query = "INSERT INTO Membership (communityId, userId) VALUES (?, ?)";
+  const values = [communityId, userId];
+
+  con.query(query, values, (error, result) => {
+    if (error) {
+      callback(error, null);
+    } else {
+      callback(null, result);
+    }
+  });
+}
+
+async function checkIfCommunityIsPrivate(roomCode) {
+  const query = `
+      SELECT cp.isPublic
+      FROM Communities c
+      JOIN CommunityProfiles cp ON c.id = cp.communityId
+      WHERE c.roomCode = ?;
+    `;
+
+  return new Promise((resolve, reject) => {
+    con.query(query, [roomCode], (error, result) => {
+      if (error) {
+        reject(error);
+      } else {
+        // If it's public in the database, return false for isPrivate and vice versa.
+        resolve(!result[0]?.isPublic);
+      }
+    });
+  });
+}
+
 module.exports = {
   addCommunity,
   addCommunityProfile,
@@ -123,4 +156,6 @@ module.exports = {
   getCommunityIdByRoomCode,
   checkIfUserIsMember,
   addMemberToCommunity,
+  addMemberWithCommunityId,
+  checkIfCommunityIsPrivate,
 };

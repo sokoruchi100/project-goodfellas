@@ -3,6 +3,7 @@ const {
   addCommunityProfile,
   fetchAllCommunitiesWithProfiles,
   getCommunityIdByRoomCode,
+  addMemberWithCommunityId,
 } = require("../database/communityQueries");
 
 const fetchVideoTitles = async (req, res) => {
@@ -56,10 +57,22 @@ const createCommunity = async (req, res) => {
                 .status(500)
                 .json({ error: "Failed to create chatroom." });
             } else {
-              return res.status(201).json({
-                message: "Chatroom created successfully.",
+              addMemberWithCommunityId(
                 communityId,
-              });
+                creatorId,
+                (error, result) => {
+                  if (error) {
+                    return res.status(500).json({
+                      error: "Failed to add creator to the membership table.",
+                    });
+                  } else {
+                    return res.status(201).json({
+                      message: "Chatroom created successfully.",
+                      communityId,
+                    });
+                  }
+                }
+              );
             }
           }
         );
