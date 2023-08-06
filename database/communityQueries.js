@@ -149,6 +149,16 @@ async function checkIfCommunityIsPrivate(roomCode) {
   });
 }
 
+async function checkIfUserIsOwner(roomCode, userId) {
+  const query = "SELECT creatorId FROM Communities WHERE roomCode = ?";
+  return new Promise((resolve, reject) => {
+    con.query(query, [roomCode], (error, results) => {
+      if (error) reject(error);
+      else resolve(results[0].creatorId == userId);
+    });
+  });
+}
+
 module.exports = {
   addCommunity,
   addCommunityProfile,
@@ -158,4 +168,5 @@ module.exports = {
   addMemberToCommunity,
   addMemberWithCommunityId,
   checkIfCommunityIsPrivate,
+  checkIfUserIsOwner,
 };

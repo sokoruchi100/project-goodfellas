@@ -16,7 +16,6 @@ async function loadAndSendMessages(communityId) {
     console.error("Invalid communityId:", communityId);
     return;
   }
-  console.log("COMMUNITY ID:" + communityId);
   const query =
     "SELECT senderId, content, timeStamp FROM Messages WHERE communityId = ?";
 
@@ -28,7 +27,6 @@ async function loadAndSendMessages(communityId) {
         reject(err);
         return;
       }
-      console.log(result);
       resolve(result);
     });
   });

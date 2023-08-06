@@ -8,7 +8,6 @@ function Dashboard({ isAuthenticated, handleAuthentication }) {
   const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
-    console.log("isAuthenticated has changed to: " + isAuthenticated);
     // Make an API call to check if the user is authenticated
     axios
       .get("/api/ensure-auth", { withCredentials: true })

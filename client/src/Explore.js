@@ -139,10 +139,6 @@ const Explore = ({ isAuthenticated, handleAuthentication }) => {
       <button onClick={handleShowPrivateCommunities}>My Communities</button>
       <ul>
         {/* Render the filtered communities */}
-        {console.log(
-          "Filtered Communities:",
-          filteredCommunities.map((c) => c.id)
-        )}
         {filteredCommunities.map((community) => (
           <li key={community.id}>
             <Link to={`/communities/chatroom/${community.roomCode}`}>

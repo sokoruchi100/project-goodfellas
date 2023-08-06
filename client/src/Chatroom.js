@@ -3,12 +3,17 @@ import { useParams, Navigate, useNavigate } from "react-router-dom"; // Import u
 import Navbar from "./Navbar";
 import axios from "axios";
 import socket from "./socket-client";
+import AddUserComponent from "./AddUserComponent";
 
 const Chatroom = ({ isAuthenticated, handleAuthentication }) => {
   const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  const [userId, setUserId] = useState(0);
+  const [userId, setUserId] = useState(null);
+  const [usersInRoom, setUsersInRoom] = useState([]);
+  const [isOwner, setIsOwner] = useState(false);
+  const [isRoomPrivate, setIsRoomPrivate] = useState(false);
+
   const { roomCode } = useParams(); // Get the roomCode from the URL parameter
 
   const memoizedHandleAuthentication = useCallback(handleAuthentication, [
@@ -16,41 +21,54 @@ const Chatroom = ({ isAuthenticated, handleAuthentication }) => {
   ]);
 
   useEffect(() => {
-    // Make an API call to get the user's ID
-    axios
-      .get("/api/user-id", { withCredentials: true })
-      .then((response) => {
+    //WE ESCAPED CALLBACK HELL!!!
+    const fetchUserDataAndRoomInfo = async () => {
+      try {
+        // Fetch user ID
+        const response = await axios.get("/api/user-id", {
+          withCredentials: true,
+        });
         const userId = response.data.userId;
         setUserId(userId);
-        axios.get(`/api/has-joined/${roomCode}/${userId}`).then((res) => {
-          if (res.data.hasJoined) {
-            // User is already a member
-            return;
-          } else {
-            // User is not a member. Check if the community is private
-            axios.get(`/api/is-private/${roomCode}`).then((res) => {
-              if (res.data.isPrivate) {
-                // Redirect user to the explore page
-                navigate("/communities/explore");
-              } else {
-                // Add user to the membership table as it's a public community
-                axios
-                  .post("/api/add-to-membership", {
-                    userId: userId,
-                    roomCode: roomCode,
-                  })
-                  .catch((error) => {
-                    console.error("Error joining community:", error);
-                  });
-              }
+
+        // Check membership
+        const hasJoinedResponse = await axios.get(
+          `/api/has-joined/${roomCode}/${userId}`
+        );
+        const memberStatus = hasJoinedResponse.data.hasJoined;
+
+        if (memberStatus) {
+          const ownerResponse = await axios.get(
+            `/api/is-owner/${roomCode}/${userId}`
+          );
+          setIsOwner(ownerResponse.data.isOwner);
+        }
+
+        // Check room's privacy
+        const roomPrivateResponse = await axios.get(
+          `/api/is-private/${roomCode}`
+        );
+        const roomPrivacy = roomPrivateResponse.data.isPrivate;
+        setIsRoomPrivate(roomPrivacy);
+
+        if (!memberStatus && roomPrivacy) {
+          navigate("/communities/explore");
+        } else if (!memberStatus && !roomPrivacy) {
+          try {
+            await axios.post("/api/add-to-membership", {
+              userId: userId,
+              roomCode: roomCode,
             });
+          } catch (error) {
+            console.error("Error joining community:", error);
           }
-        });
-      })
-      .catch((error) => {
-        console.error("Error fetching user ID:", error);
-      });
-  }, []);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+    fetchUserDataAndRoomInfo();
+  }, [navigate, roomCode]);
 
   useEffect(() => {
     // Make an API call to check if the user is authenticated
@@ -80,13 +98,19 @@ const Chatroom = ({ isAuthenticated, handleAuthentication }) => {
       setMessages(messages);
     });
 
+    socket.on("users-in-room", (users) => {
+      setUsersInRoom(users);
+    });
+
     // Scroll to the bottom whenever messages update
     scrollToBottom();
 
     // Cleanup the socket connection when the component unmounts
     return () => {
-      // Remove the "new-message" event listener when the component unmounts
+      // cleans up when unmounting, aka leaving the community
+      socket.emit("leave-community", roomCode);
       socket.off("new-message");
+      socket.off("users-in-room");
     };
   }, [roomCode]); // Include roomCode in the dependency array
 
@@ -123,6 +147,14 @@ const Chatroom = ({ isAuthenticated, handleAuthentication }) => {
       <Navbar handleAuthentication={handleAuthentication} />
       <div className="chatroom">
         <h1>Chatroom {roomCode}</h1>
+        <div className="users">
+          {usersInRoom.map((user) => (
+            <span key={user.id}>{user.name}</span>
+          ))}
+        </div>
+        {console.log("Is Owner:", isOwner)}
+        {console.log("Is Room Private:", isRoomPrivate)}
+        {isOwner && isRoomPrivate && <AddUserComponent></AddUserComponent>}
         {messages &&
           messages.map((message, index) => (
             <div key={index} className={`message ${message.senderId}`}>

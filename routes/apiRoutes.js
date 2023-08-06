@@ -8,6 +8,7 @@ const {
   checkIfUserIsMember,
   addMemberToCommunity,
   checkIfCommunityIsPrivate,
+  checkIfUserIsOwner,
 } = require("../database/communityQueries");
 
 // Endpoint to get all video titles from the user's YouTube channel
@@ -83,6 +84,16 @@ router.get("/is-private/:roomCode", async (req, res) => {
     res.status(200).json({ isPrivate });
   } catch (error) {
     res.status(500).json({ error: "Error checking community privacy" });
+  }
+});
+
+router.get("/is-owner/:roomCode/:userId", async (req, res) => {
+  const { roomCode, userId } = req.params;
+  try {
+    const isOwner = await checkIfUserIsOwner(roomCode, userId);
+    res.status(200).json({ isOwner });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to check if user is the owner" });
   }
 });
 

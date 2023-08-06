@@ -27,7 +27,6 @@ const handleGoogleCallback = async (req, res) => {
         });
       } else {
         //Welcome to callback hell
-        console.log("User already exists in our database");
 
         //Adds UserProfile, but could be deleted since not really needed unless in certain circumstances
         const querySearchForProfile =

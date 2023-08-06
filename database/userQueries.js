@@ -17,10 +17,8 @@ function addUser(id, username, callback) {
 
   con.query(query, values, (error, result) => {
     if (error) {
-      console.log("Failed to add user", error);
       res.status(500).json({ error: "Failed to add user" });
     } else {
-      console.log("Added User", username);
       const userId = result.insertId;
       callback(userId);
     }
@@ -37,7 +35,6 @@ function addUserProfile(userId, profilePicture, displayName) {
       console.log("Failed to add userProfile", error);
       res.status(500).json({ error: "Failed to add userProfile" });
     } else {
-      console.log("Added UserProfile", displayName);
     }
   });
 }
