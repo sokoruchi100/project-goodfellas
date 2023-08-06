@@ -21,6 +21,14 @@ const Chatroom = ({ isAuthenticated, handleAuthentication }) => {
       .then((response) => {
         const userId = response.data.userId;
         setUserId(userId);
+        axios
+          .post("/api/add-to-membership", {
+            userId: userId,
+            roomCode: roomCode,
+          })
+          .catch((error) => {
+            console.error("Error joining community:", error);
+          });
       })
       .catch((error) => {
         console.error("Error fetching user ID:", error);

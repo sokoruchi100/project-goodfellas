@@ -3,6 +3,11 @@ const router = express.Router();
 const { ensureAuthenticated } = require("../middleware/authMiddleware");
 const apiController = require("../controllers/apiController");
 const { getUserIdByChannelId } = require("../database/userQueries"); // Import the userQueries file
+const {
+  getCommunityIdByRoomCode,
+  checkIfUserIsMember,
+  addMemberToCommunity,
+} = require("../database/communityQueries");
 
 // Endpoint to get all video titles from the user's YouTube channel
 router.get("/videos", ensureAuthenticated, apiController.fetchVideoTitles);
@@ -37,4 +42,26 @@ router.get("/user-id", (req, res) => {
 // Route to create a new chatroom
 router.post("/create-community", apiController.createCommunity);
 
+// Route to check if the user and community IDs exist in the Membership table
+router.get("/has-joined/:roomCode/:userId", async (req, res) => {
+  const { roomCode, userId } = req.params;
+
+  try {
+    const hasJoined = await checkIfUserIsMember(roomCode, userId);
+    res.status(200).json({ hasJoined });
+  } catch (error) {
+    res.status(500).json({ error: "Error checking community membership" });
+  }
+});
+
+// Route to add a user to the Membership table
+router.post("/add-to-membership", async (req, res) => {
+  const { userId, roomCode } = req.body;
+  try {
+    await addMemberToCommunity(userId, roomCode);
+    res.status(200).json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to add user to Membership table" });
+  }
+});
 module.exports = router;

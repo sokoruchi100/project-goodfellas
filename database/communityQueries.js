@@ -78,9 +78,59 @@ function getCommunityIdByRoomCode(roomCode) {
   });
 }
 
+async function checkIfUserIsMember(roomCode, userId) {
+  const query = `
+  SELECT *
+  FROM Membership m
+  JOIN Communities c ON m.communityId = c.id
+  WHERE c.roomCode = ? AND m.userId = ?;
+`;
+  const values = [roomCode, userId];
+
+  return new Promise((resolve, reject) => {
+    con.query(query, values, (error, result) => {
+      if (error) {
+        console.log("Error checking community membership:", error);
+        reject(error);
+      } else {
+        console.log(result);
+        resolve(result.length > 0);
+      }
+    });
+  });
+}
+
+async function addMemberToCommunity(userId, roomCode) {
+  try {
+    const communityId = await getCommunityIdByRoomCode(roomCode);
+    if (!communityId) {
+      throw new Error("Failed to get communityId for room code");
+    }
+    const query = "INSERT INTO Membership (userId, communityId) VALUES (?, ?)";
+    const values = [userId, communityId];
+
+    return new Promise((resolve, reject) => {
+      con.query(query, values, (error, result) => {
+        if (error) {
+          console.log("Failed to add user to Membership table", error);
+          reject(error);
+        } else {
+          console.log("Added user to Membership table");
+          resolve();
+        }
+      });
+    });
+  } catch (error) {
+    console.log("Error getting communityId:", error);
+    throw error;
+  }
+}
+
 module.exports = {
   addCommunity,
   addCommunityProfile,
   fetchAllCommunitiesWithProfiles,
   getCommunityIdByRoomCode,
+  checkIfUserIsMember,
+  addMemberToCommunity,
 };
