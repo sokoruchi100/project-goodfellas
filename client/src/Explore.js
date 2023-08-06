@@ -12,6 +12,8 @@ const Explore = ({ isAuthenticated, handleAuthentication }) => {
   // Use the useFetchData hook and get the communities and userId
   //const { communities, userId } = useFetchData();
 
+  // State to handle whether to show public or private communities
+  const [showPublicCommunities, setShowPublicCommunities] = useState(true);
   const [communities, setCommunities] = useState([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -40,6 +42,27 @@ const Explore = ({ isAuthenticated, handleAuthentication }) => {
         console.error("Error fetching communities:", error);
       });
   }, []); // Empty dependency array to run the effect only once
+
+  // Function to toggle the state for showing public communities
+  const handleShowPublicCommunities = () => {
+    setShowPublicCommunities(true);
+  };
+
+  // Function to toggle the state for showing private communities
+  const handleShowPrivateCommunities = () => {
+    setShowPublicCommunities(false);
+  };
+
+  // Function to filter the communities based on public and private states
+  const filteredCommunities = communities.filter((community) => {
+    if (
+      (showPublicCommunities && community.isPublic) ||
+      (!showPublicCommunities && !community.isPublic)
+    ) {
+      return true; // Show only public communities
+    }
+    return false; // Hide the community
+  });
 
   const generateRoomCode = () => {
     const roomCodeLength = 25;
@@ -92,9 +115,14 @@ const Explore = ({ isAuthenticated, handleAuthentication }) => {
   return (
     <div>
       <Navbar handleAuthentication={handleAuthentication} />
-      <h1>Explore Communities</h1>
+      <h1>Communities</h1>
+      {/* Toggle button to show public communities */}
+      <button onClick={handleShowPublicCommunities}>Explore</button>
+      {/* Toggle button to show private communities */}
+      <button onClick={handleShowPrivateCommunities}>My Communities</button>
       <ul>
-        {communities.map((community) => (
+        {/* Render the filtered communities */}
+        {filteredCommunities.map((community) => (
           <li key={community.id}>
             <Link to={`/communities/chatroom/${community.roomCode}`}>
               <h2>{community.communityName}</h2>
