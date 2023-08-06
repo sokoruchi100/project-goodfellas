@@ -2,26 +2,21 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, Navigate } from "react-router-dom"; // Import Link from react-router-dom
 import Navbar from "./Navbar";
+import { useAuthentication } from "./hooks/useAuthentication";
+import { validateInputLength } from "./utils/validate";
 
 const Explore = ({ isAuthenticated, handleAuthentication }) => {
+  // This line will automatically handle the authentication checks
+  useAuthentication(isAuthenticated, handleAuthentication);
+
+  // Use the useFetchData hook and get the communities and userId
+  //const { communities, userId } = useFetchData();
+
   const [communities, setCommunities] = useState([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [isPublic, setIsPublic] = useState(true); // Set the default value to true
   const [userId, setUserId] = useState(0);
-
-  useEffect(() => {
-    console.log("isAuthenticated has changed to: " + isAuthenticated);
-    // Make an API call to check if the user is authenticated
-    axios
-      .get("/api/ensure-auth", { withCredentials: true })
-      .then((response) => {
-        handleAuthentication(response.data.isAuthenticated);
-      })
-      .catch((error) => {
-        console.error("Error checking authentication:", error);
-      });
-  }, [isAuthenticated, handleAuthentication]);
 
   useEffect(() => {
     //Gets User Id
@@ -59,14 +54,12 @@ const Explore = ({ isAuthenticated, handleAuthentication }) => {
     return roomCode;
   };
 
-  const handleCreateChatroom = () => {
-    // Validate community name and description
-    if (name.length < 1 || name.length > 50) {
-      alert("Name must have between 1 and 50 characters.");
-      return;
-    }
-    if (description.length < 1 || description.length > 200) {
-      alert("Description must have between 1 and 200 characters.");
+  const handleCreateChatroom = async () => {
+    //Performs checks
+    if (
+      !validateInputLength(name, 1, 50) ||
+      !validateInputLength(description, 1, 200)
+    ) {
       return;
     }
 
@@ -74,32 +67,26 @@ const Explore = ({ isAuthenticated, handleAuthentication }) => {
     const roomCode = generateRoomCode();
 
     // Make an API call to store the new chatroom in the database
-    axios
-      .post("/api/create-community", {
+    try {
+      await axios.post("/api/create-community", {
         roomCode,
         creatorId: userId,
         communityName: name,
         description,
         isPublic,
-      })
-      .then((response) => {
-        // After successful creation, update the communities state with the new chatroom
-        axios
-          .get("/api/communities")
-          .then((response) => {
-            setCommunities(response.data);
-          })
-          .catch((error) => {
-            console.error("Error fetching communities:", error);
-          });
-        // Clear the form fields
-        setName("");
-        setDescription("");
-        setIsPublic(true);
-      })
-      .catch((error) => {
-        console.error("Error creating chatroom:", error);
       });
+
+      // Refetch the communities
+      const response = await axios.get("/api/communities");
+      setCommunities(response.data);
+
+      // Clear the form fields
+      setName("");
+      setDescription("");
+      setIsPublic(true);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (
@@ -107,7 +94,6 @@ const Explore = ({ isAuthenticated, handleAuthentication }) => {
       <Navbar handleAuthentication={handleAuthentication} />
       <h1>Explore Communities</h1>
       <ul>
-        {console.log(communities)}
         {communities.map((community) => (
           <li key={community.id}>
             <Link to={`/communities/chatroom/${community.roomCode}`}>
