@@ -26,26 +26,32 @@ function initializeSocketServer(server) {
     console.log("A user connected:", socket.id);
 
     // Handle WebSocket events here
-    socket.on(EVENTS.JOIN_COMMUNITY, (roomCode) => {
+    socket.on(EVENTS.JOIN_COMMUNITY, async (roomCode) => {
       console.log("A user joined a community:", roomCode);
       // Implement room joining logic here based on the "message" parameter
       socket.join(roomCode);
-      //Perform query to geet communityId from communities using roomCode
-      const communityId = getCommunityIdByRoomCode(roomCode);
-      loadAndSendMessages(communityId, (messages) => {
-        socket.emit(EVENTS.LOAD_MESSAGES, messages);
-      });
+      //Perform query to get communityId from communities using roomCode
+      const communityId = await getCommunityIdByRoomCode(roomCode);
+      if (communityId !== null) {
+        try {
+          const messages = await loadAndSendMessages(communityId); // Use await here
+          socket.emit(EVENTS.LOAD_MESSAGES, messages);
+        } catch (error) {
+          console.error("Error loading and sending messages:", error);
+        }
+      }
     });
 
     // Handle "send-message" event
-    socket.on(EVENTS.SEND_MESSAGE, async ({ room, message }) => {
-      console.log("Received message:", message);
+    socket.on(EVENTS.SEND_MESSAGE, async ({ roomCode, senderId, content }) => {
+      console.log("Received message:", content);
       //Perform query to geet communityId from communities using roomCode
-      const communityId = getCommunityIdByRoomCode(roomCode);
+      const communityId = await getCommunityIdByRoomCode(roomCode);
+      console.log("WELCOME TO COMMUNITY NUMBER: " + communityId);
       // Save the message to the database
-      await saveMessageToDatabase(communityId, message);
+      await saveMessageToDatabase(communityId, { senderId, content });
       // Broadcast the message to all clients in the room
-      socket.to(room).emit(EVENTS.NEW_MESSAGE, message);
+      socket.to(roomCode).emit(EVENTS.NEW_MESSAGE, { senderId, content });
     });
 
     socket.on(EVENTS.DISCONNECT, () => {

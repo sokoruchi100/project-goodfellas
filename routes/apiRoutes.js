@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { ensureAuthenticated } = require("../middleware/authMiddleware");
 const apiController = require("../controllers/apiController");
+const { getUserIdByChannelId } = require("../database/userQueries"); // Import the userQueries file
 
 // Endpoint to get all video titles from the user's YouTube channel
 router.get("/videos", ensureAuthenticated, apiController.fetchVideoTitles);
@@ -20,6 +21,17 @@ router.get("/ensure-auth", (req, res) => {
     // User is not authenticated
     res.json({ isAuthenticated: false });
   }
+});
+
+router.get("/user-id", (req, res) => {
+  getUserIdByChannelId(req.session.channelId, (error, userId) => {
+    if (userId) {
+      console.log("User ID:", userId);
+      res.json({ userId });
+    } else {
+      return res.status(401).json({ message: "User not authenticated" });
+    }
+  });
 });
 
 module.exports = router;

@@ -7,6 +7,7 @@ import socket from "./socket-client";
 const Chatroom = ({ isAuthenticated, handleAuthentication }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const [userId, setUserId] = useState(0);
   const { roomCode } = useParams(); // Get the roomCode from the URL parameter
 
   const memoizedHandleAuthentication = useCallback(handleAuthentication, [
@@ -14,7 +15,19 @@ const Chatroom = ({ isAuthenticated, handleAuthentication }) => {
   ]);
 
   useEffect(() => {
-    console.log("isAuthenticated has changed to: " + isAuthenticated);
+    // Make an API call to get the user's ID
+    axios
+      .get("/api/user-id", { withCredentials: true })
+      .then((response) => {
+        const userId = response.data.userId;
+        setUserId(userId);
+      })
+      .catch((error) => {
+        console.error("Error fetching user ID:", error);
+      });
+  }, []);
+
+  useEffect(() => {
     // Make an API call to check if the user is authenticated
     axios
       .get("/api/ensure-auth", { withCredentials: true })
@@ -31,14 +44,15 @@ const Chatroom = ({ isAuthenticated, handleAuthentication }) => {
     socket.emit("join-community", roomCode);
 
     // Handle incoming messages from the server
-    socket.on("new-message", (message) => {
+    socket.on("new-message", ({ senderId, content }) => {
       setMessages((prevMessages) => [
         ...prevMessages,
-        { senderId: 0, content: message, timeStamp: new Date() },
+        { senderId: senderId, content: content, timeStamp: new Date() },
       ]);
     });
 
     socket.on("load-messages", (messages) => {
+      console.log("LOADED MESSAGES");
       setMessages(messages);
     });
 
@@ -58,14 +72,19 @@ const Chatroom = ({ isAuthenticated, handleAuthentication }) => {
 
   const handleSendMessage = (event) => {
     event.preventDefault(); // Prevent form submission
-    if (newMessage.trim() !== "") {
+    if (newMessage.trim() !== "" && userId !== null) {
+      const messageData = {
+        roomCode: roomCode,
+        senderId: userId,
+        content: newMessage,
+      };
       //If new message isn't blank, add it to messages
       setMessages((prevMessages) => [
         ...prevMessages,
-        { senderId: 1, content: newMessage, timeStamp: new Date() },
+        { senderId: userId, content: newMessage, timeStamp: new Date() },
       ]);
       // Emit the "send-message" event to the server with the new message
-      socket.emit("send-message", { room: roomCode, message: newMessage });
+      socket.emit("send-message", messageData);
       setNewMessage("");
     }
   };
@@ -80,11 +99,14 @@ const Chatroom = ({ isAuthenticated, handleAuthentication }) => {
       <Navbar handleAuthentication={handleAuthentication} />
       <div className="chatroom">
         <h1>Chatroom {roomCode}</h1>
-        {messages.map((message, index) => (
-          <div key={index} className={`message ${message.sender}`}>
-            {message.text}
-          </div>
-        ))}
+        {messages &&
+          messages.map((message, index) => (
+            <div key={index} className={`message ${message.senderId}`}>
+              {message.senderId}
+              {message.content}
+              {message.timeStamp.toLocaleString()}
+            </div>
+          ))}
       </div>
       <div className="input-container">
         <form onSubmit={handleSendMessage}>

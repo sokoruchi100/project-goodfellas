@@ -1,24 +1,37 @@
 const con = require("./dbConnection"); // Import the MySQL connection
 
-async function saveMessageToDatabase(communityId, { text, sender }) {
+async function saveMessageToDatabase(communityId, { senderId, content }) {
   const query =
-    "INSERT INTO messages (communityId, senderId, content, timestamp) VALUES (?, ?, ?, ?)";
-  const values = [communityId, sender, text, new Date()];
+    "INSERT INTO Messages (communityId, senderId, content) VALUES (?, ?, ?)";
+  const values = [communityId, senderId, content];
   try {
-    con.query(query, values);
+    await con.query(query, values);
   } catch (error) {
     console.error("Error saving message to database:", error.message);
   }
 }
 
-async function loadAndSendMessages(communityId, callback) {
-  const query = "SELECT * FROM messages WHERE communityId = ?";
-  try {
-    const messages = con.query(query, [communityId]);
-    callback(messages);
-  } catch (error) {
-    console.error("Error loading messages:", error.message);
+async function loadAndSendMessages(communityId) {
+  if (!communityId) {
+    console.error("Invalid communityId:", communityId);
+    return;
   }
+  console.log("COMMUNITY ID:" + communityId);
+  const query =
+    "SELECT senderId, content, timeStamp FROM Messages WHERE communityId = ?";
+
+  return new Promise((resolve, reject) => {
+    con.query(query, [communityId], (err, result) => {
+      if (err) {
+        console.error("Error loading messages:", err.message);
+        console.trace();
+        reject(err);
+        return;
+      }
+      console.log(result);
+      resolve(result);
+    });
+  });
 }
 
 module.exports = { saveMessageToDatabase, loadAndSendMessages };

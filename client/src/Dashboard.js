@@ -20,12 +20,12 @@ function Dashboard({ isAuthenticated, handleAuthentication }) {
       });
   }, [isAuthenticated]);
 
-  useEffect(() => {
-    fetch("/api/videos")
-      .then((response) => response.json())
-      .then((data) => setVideoTitles(data))
-      .catch((error) => console.error("Error fetching video titles:", error));
-  }, []);
+  // useEffect(() => {
+  //   fetch("/api/videos")
+  //     .then((response) => response.json())
+  //     .then((data) => setVideoTitles(data))
+  //     .catch((error) => console.error("Error fetching video titles:", error));
+  // }, []);
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -43,11 +43,11 @@ function Dashboard({ isAuthenticated, handleAuthentication }) {
     <div>
       <Navbar handleAuthentication={handleAuthentication} />
       <h1>VIDEOS</h1>
-      <ul>
+      {/* <ul>
         {videoTitles.map((title, index) => (
           <li key={index}>{title}</li>
         ))}
-      </ul>
+      </ul> */}
 
       {/* Button to trigger image selection*/}
       <input type="file" accept="image/*" onChange={handleImageChange} />

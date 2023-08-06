@@ -42,7 +42,27 @@ function addUserProfile(userId, profilePicture, displayName) {
   });
 }
 
+function getUserIdByChannelId(channelId, callback) {
+  const query = "SELECT id FROM Users WHERE channelId = ?";
+  const values = [channelId];
+
+  con.query(query, values, (error, result) => {
+    if (error) {
+      console.log("Error getting user ID:", error);
+      callback(error, null);
+    } else {
+      if (result.length > 0) {
+        const userId = result[0].id;
+        callback(null, userId);
+      } else {
+        callback(null, null); // Return null if no matching channelId is found
+      }
+    }
+  });
+}
+
 module.exports = {
   addUser,
   addUserProfile,
+  getUserIdByChannelId,
 };

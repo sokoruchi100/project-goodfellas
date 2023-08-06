@@ -64,19 +64,18 @@ function fetchAllCommunitiesWithProfiles(callback) {
   });
 }
 
-async function getCommunityIdByRoomCode(roomCode) {
+function getCommunityIdByRoomCode(roomCode) {
   const query = "SELECT id FROM Communities WHERE roomCode = ?";
-  try {
-    const result = await con.query(query, [roomCode]);
-    if (result.length > 0) {
-      return result[0].id;
-    } else {
-      return null; // Return null if no matching roomCode is found
-    }
-  } catch (error) {
-    console.error("Error getting community id:", error.message);
-    throw error; // Rethrow the error to handle it in the calling function
-  }
+  return new Promise((resolve, reject) => {
+    con.query(query, [roomCode], (error, result) => {
+      if (error) {
+        console.error("Error getting community id:", error.message);
+        reject(error); // Reject the promise with the error
+      } else {
+        resolve(result[0]?.id); // Resolve the promise with the ID or undefined if the result is empty
+      }
+    });
+  });
 }
 
 module.exports = {
