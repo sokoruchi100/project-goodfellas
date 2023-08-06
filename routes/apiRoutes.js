@@ -31,7 +31,6 @@ router.get("/ensure-auth", (req, res) => {
 router.get("/user-id", (req, res) => {
   getUserIdByChannelId(req.session.channelId, (error, userId) => {
     if (userId) {
-      console.log("User ID:", userId);
       res.json({ userId });
     } else {
       return res.status(401).json({ message: "User not authenticated" });
@@ -64,4 +63,15 @@ router.post("/add-to-membership", async (req, res) => {
     res.status(500).json({ error: "Failed to add user to Membership table" });
   }
 });
+
+router.get("/is-user-member", async (req, res) => {
+  const { roomCode, userId } = req.query;
+  try {
+    const isMember = await checkIfUserIsMember(roomCode, userId);
+    res.status(200).json({ isMember: isMember });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to check if user is member" });
+  }
+});
+
 module.exports = router;

@@ -23,11 +23,8 @@ function initializeSocketServer(server) {
   });
 
   io.on(EVENTS.CONNECTION, (socket) => {
-    console.log("A user connected:", socket.id);
-
     // Handle WebSocket events here
     socket.on(EVENTS.JOIN_COMMUNITY, async (roomCode) => {
-      console.log("A user joined a community:", roomCode);
       // Implement room joining logic here based on the "message" parameter
       socket.join(roomCode);
       //Perform query to get communityId from communities using roomCode
@@ -44,10 +41,8 @@ function initializeSocketServer(server) {
 
     // Handle "send-message" event
     socket.on(EVENTS.SEND_MESSAGE, async ({ roomCode, senderId, content }) => {
-      console.log("Received message:", content);
       //Perform query to geet communityId from communities using roomCode
       const communityId = await getCommunityIdByRoomCode(roomCode);
-      console.log("WELCOME TO COMMUNITY NUMBER: " + communityId);
       // Save the message to the database
       await saveMessageToDatabase(communityId, { senderId, content });
       // Broadcast the message to all clients in the room
@@ -55,7 +50,6 @@ function initializeSocketServer(server) {
     });
 
     socket.on(EVENTS.DISCONNECT, () => {
-      console.log("A user disconnected:", socket.id);
       // Handle user disconnection here
     });
   });

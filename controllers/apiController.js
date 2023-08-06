@@ -17,7 +17,6 @@ const fetchVideoTitles = async (req, res) => {
 const fetchCommunitiesAndCommunityProfiles = (req, res) => {
   fetchAllCommunitiesWithProfiles((error, result) => {
     if (error) {
-      console.log("Error fetching communities and community profiles:", error);
       res.status(500).json({ error: "Failed to fetch communities" });
     } else {
       res.json(result);
@@ -42,7 +41,6 @@ const createCommunity = async (req, res) => {
     // Add the chatroom to the Communities table
     addCommunity(roomCode, creatorId, new Date(), (error, communityId) => {
       if (error) {
-        console.log("Failed to add community", error);
         return res.status(500).json({ error: "Failed to create chatroom." });
       } else {
         // Add the chatroom profile to the CommunityProfiles table
@@ -54,12 +52,10 @@ const createCommunity = async (req, res) => {
           isPublic,
           (error, communityProfileId) => {
             if (error) {
-              console.log("Failed to add community profile", error);
               return res
                 .status(500)
                 .json({ error: "Failed to create chatroom." });
             } else {
-              console.log("Created Chatroom with ID:", communityId);
               return res.status(201).json({
                 message: "Chatroom created successfully.",
                 communityId,

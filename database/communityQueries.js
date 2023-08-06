@@ -7,10 +7,8 @@ function addCommunity(roomCode, creatorId, dateOfCreation, callback) {
 
   con.query(query, values, (error, result) => {
     if (error) {
-      console.log("Failed to add community", error);
       callback(error, null);
     } else {
-      console.log("Added Community");
       const communityId = result.insertId;
       callback(null, communityId);
     }
@@ -37,10 +35,8 @@ function addCommunityProfile(
 
   con.query(query, values, (error, result) => {
     if (error) {
-      console.log("Failed to add community profile", error);
       callback(error, null);
     } else {
-      console.log("Added Community Profile");
       const communityProfileId = result.insertId;
       callback(null, communityProfileId);
     }
@@ -56,7 +52,6 @@ function fetchAllCommunitiesWithProfiles(callback) {
 
   con.query(query, (error, result) => {
     if (error) {
-      console.log("Error fetching communities:", error);
       callback(error, null);
     } else {
       callback(null, result);
@@ -90,10 +85,8 @@ async function checkIfUserIsMember(roomCode, userId) {
   return new Promise((resolve, reject) => {
     con.query(query, values, (error, result) => {
       if (error) {
-        console.log("Error checking community membership:", error);
         reject(error);
       } else {
-        console.log(result);
         resolve(result.length > 0);
       }
     });
@@ -112,16 +105,13 @@ async function addMemberToCommunity(userId, roomCode) {
     return new Promise((resolve, reject) => {
       con.query(query, values, (error, result) => {
         if (error) {
-          console.log("Failed to add user to Membership table", error);
           reject(error);
         } else {
-          console.log("Added user to Membership table");
           resolve();
         }
       });
     });
   } catch (error) {
-    console.log("Error getting communityId:", error);
     throw error;
   }
 }

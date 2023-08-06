@@ -60,7 +60,6 @@ const Chatroom = ({ isAuthenticated, handleAuthentication }) => {
     });
 
     socket.on("load-messages", (messages) => {
-      console.log("LOADED MESSAGES");
       setMessages(messages);
     });
 

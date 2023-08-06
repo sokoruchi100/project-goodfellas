@@ -19,6 +19,7 @@ const Explore = ({ isAuthenticated, handleAuthentication }) => {
   const [description, setDescription] = useState("");
   const [isPublic, setIsPublic] = useState(true); // Set the default value to true
   const [userId, setUserId] = useState(0);
+  const [filteredCommunities, setFilteredCommunities] = useState([]);
 
   useEffect(() => {
     //Gets User Id
@@ -54,15 +55,31 @@ const Explore = ({ isAuthenticated, handleAuthentication }) => {
   };
 
   // Function to filter the communities based on public and private states
-  const filteredCommunities = communities.filter((community) => {
-    if (
-      (showPublicCommunities && community.isPublic) ||
-      (!showPublicCommunities && !community.isPublic)
-    ) {
-      return true; // Show only public communities
-    }
-    return false; // Hide the community
-  });
+  useEffect(() => {
+    const fetchFilteredCommunities = async () => {
+      const results = [];
+
+      for (const community of communities) {
+        if (showPublicCommunities && community.isPublic) {
+          results.push(community); // Include the community object in the results
+        } else if (!showPublicCommunities && !community.isPublic) {
+          try {
+            const response = await axios.get("/api/is-user-member", {
+              params: { roomCode: community.roomCode, userId },
+            });
+            if (response.data.isMember) {
+              results.push(community); // Include the community object in the results
+            }
+          } catch (error) {
+            console.error("Error fetching user membership:", error);
+          }
+        }
+      }
+      setFilteredCommunities(results);
+    };
+
+    fetchFilteredCommunities();
+  }, [communities, showPublicCommunities, userId]);
 
   const generateRoomCode = () => {
     const roomCodeLength = 25;
@@ -122,6 +139,10 @@ const Explore = ({ isAuthenticated, handleAuthentication }) => {
       <button onClick={handleShowPrivateCommunities}>My Communities</button>
       <ul>
         {/* Render the filtered communities */}
+        {console.log(
+          "Filtered Communities:",
+          filteredCommunities.map((c) => c.id)
+        )}
         {filteredCommunities.map((community) => (
           <li key={community.id}>
             <Link to={`/communities/chatroom/${community.roomCode}`}>

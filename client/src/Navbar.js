@@ -26,7 +26,7 @@ const Navbar = ({ handleAuthentication }) => {
           <Link to="/dashboard">Dashboard</Link>
         </li>
         <li>
-          <Link to="/communities/explore">Explore</Link>
+          <Link to="/communities/explore">Communities</Link>
         </li>
         <li>
           <button onClick={handleLogout}>Log out</button>
