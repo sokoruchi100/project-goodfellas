@@ -6,10 +6,14 @@ import { useAuthentication } from "./hooks/useAuthentication";
 import { validateInputLength } from "./utils/validate";
 import { useAuth } from "./context/AuthContext";
 import UserContext from "./context/UserContext";
+import TagBox from "./components/TagBox";
+import Button from "./components/Button";
+import { arrayToString, postCommunityTags, getTags } from "./utils/TagsUtil";
 
 const Explore = () => {
   const userId = useContext(UserContext);
   const { isAuthenticated, handleAuthentication } = useAuth();
+  const [tags, setTags] = useState("");
   // This line will automatically handle the authentication checks
   useAuthentication(isAuthenticated, handleAuthentication);
 
@@ -100,13 +104,15 @@ const Explore = () => {
 
     // Make an API call to store the new chatroom in the database
     try {
-      await axios.post("/api/create-community", {
+      const result = await axios.post("/api/create-community", {
         roomCode,
         creatorId: userId,
         communityName: name,
         description,
         isPublic,
       });
+
+      handleSubmitTags(result.data.communityId);
 
       // Refetch the communities
       const response = await axios.get("/api/communities");
@@ -119,6 +125,20 @@ const Explore = () => {
     } catch (error) {
       console.error("Error:", error);
     }
+  };
+
+  const handleTagsChange = (e) => {
+    setTags(e.target.value);
+  };
+
+  const handleSubmitTags = (communityId) => {
+    postCommunityTags(communityId, tags)
+      .then((response) => {
+        console.log("Tags successfully updated:", response.data);
+      })
+      .catch((error) => {
+        console.error("Error updating tags:", error);
+      });
   };
 
   return (
@@ -171,9 +191,8 @@ const Explore = () => {
               onChange={(e) => setIsPublic(e.target.checked)}
             />
           </label>
-          <button type="button" onClick={handleCreateChatroom}>
-            Create Chatroom
-          </button>
+          <TagBox value={tags} onChange={handleTagsChange} />
+          <Button text="Create Chatroom" onClick={handleCreateChatroom} />
         </form>
       </div>
       {!isAuthenticated && <Navigate to="/" />}

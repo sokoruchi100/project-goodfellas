@@ -30,11 +30,40 @@ function linkUserWithTag(userId, tagId) {
   });
 }
 
+// Links tag with community
+function linkCommunityWithTag(communityId, tagId) {
+  return new Promise((resolve, reject) => {
+    const query =
+      "INSERT INTO CommunityTag (communityId, tagId) VALUES (?, ?) ON DUPLICATE KEY UPDATE communityId=VALUES(communityId), tagId=VALUES(tagId)";
+    con.query(query, [communityId, tagId], (error, results) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(results);
+      }
+    });
+  });
+}
+
 // Deletes all user tag links
 function deleteAllUserTags(userId) {
   return new Promise((resolve, reject) => {
     const query = "DELETE FROM UserTag WHERE userId = ?";
     con.query(query, [userId], (error, results) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(results);
+      }
+    });
+  });
+}
+
+// Deletes all community tag links
+function deleteAllCommunityTags(communityId) {
+  return new Promise((resolve, reject) => {
+    const query = "DELETE FROM CommunityTag WHERE communityId = ?";
+    con.query(query, [communityId], (error, results) => {
       if (error) {
         reject(error);
       } else {
@@ -50,6 +79,21 @@ function fetchUserTags(userId) {
     const query =
       "SELECT t.tag FROM Tags t JOIN UserTag ut ON t.id = ut.tagId WHERE ut.userId = ?";
     con.query(query, [userId], (error, results) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(results.map((result) => result.tag)); // This will return an array of tags for the user
+      }
+    });
+  });
+}
+
+// Fetches all tags from a community
+function fetchCommunityTags(communityId) {
+  return new Promise((resolve, reject) => {
+    const query =
+      "SELECT t.tag FROM Tags t JOIN CommunityTag ct ON t.id = ct.tagId WHERE ct.communityId = ?";
+    con.query(query, [communityId], (error, results) => {
       if (error) {
         reject(error);
       } else {
@@ -83,4 +127,7 @@ module.exports = {
   deleteAllUserTags,
   fetchUserTags,
   getTagIdByName,
+  linkCommunityWithTag,
+  deleteAllCommunityTags,
+  fetchCommunityTags,
 };
