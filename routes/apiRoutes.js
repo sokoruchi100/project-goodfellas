@@ -11,7 +11,6 @@ const {
   addMemberToCommunity,
   checkIfCommunityIsPrivate,
   checkIfUserIsOwner,
-  checkIfUserIsAlreadyMember,
 } = require("../database/communityQueries");
 
 // Endpoint to get all video titles from the user's YouTube channel
@@ -64,7 +63,7 @@ router.post("/add-to-membership", async (req, res) => {
   const { userId, roomCode } = req.body;
   console.log("USER ID:" + userId);
   try {
-    const isAlreadyMember = await checkIfUserIsAlreadyMember(userId);
+    const isAlreadyMember = await checkIfUserIsMember(roomCode, userId);
     if (isAlreadyMember) {
       return res
         .status(200)

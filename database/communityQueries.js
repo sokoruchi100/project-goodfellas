@@ -161,22 +161,6 @@ async function checkIfUserIsOwner(roomCode, userId) {
   });
 }
 
-// Helper function to check if a user is already a member
-function checkIfUserIsAlreadyMember(userId) {
-  const query = "SELECT * FROM Membership WHERE userId = ?";
-  return new Promise((resolve, reject) => {
-    con.query(query, [userId], (error, results) => {
-      if (error) {
-        reject(error);
-      } else if (results.length > 0) {
-        resolve(true);
-      } else {
-        resolve(false);
-      }
-    });
-  });
-}
-
 module.exports = {
   addCommunity,
   addCommunityProfile,
@@ -187,5 +171,4 @@ module.exports = {
   addMemberWithCommunityId,
   checkIfCommunityIsPrivate,
   checkIfUserIsOwner,
-  checkIfUserIsAlreadyMember,
 };
