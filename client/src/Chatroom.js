@@ -4,8 +4,10 @@ import Navbar from "./Navbar";
 import axios from "axios";
 import socket from "./socket-client";
 import AddUserComponent from "./AddUserComponent";
+import { useAuth } from "./context/AuthContext";
 
-const Chatroom = ({ isAuthenticated, handleAuthentication }) => {
+const Chatroom = () => {
+  const { isAuthenticated, handleAuthentication } = useAuth();
   const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");

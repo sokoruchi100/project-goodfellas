@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Navigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import axios from "axios";
+import UserContext from "./context/UserContext";
+import { useAuth } from "./context/AuthContext";
 
-function Dashboard({ isAuthenticated, handleAuthentication }) {
+function Dashboard() {
+  const { isAuthenticated, handleAuthentication } = useAuth();
+  const userId = useContext(UserContext);
   const [videoTitles, setVideoTitles] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
 

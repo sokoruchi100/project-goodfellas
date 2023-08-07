@@ -4,8 +4,10 @@ import { Link, Navigate } from "react-router-dom"; // Import Link from react-rou
 import Navbar from "./Navbar";
 import { useAuthentication } from "./hooks/useAuthentication";
 import { validateInputLength } from "./utils/validate";
+import { useAuth } from "./context/AuthContext";
 
-const Explore = ({ isAuthenticated, handleAuthentication }) => {
+const Explore = () => {
+  const { isAuthenticated, handleAuthentication } = useAuth();
   // This line will automatically handle the authentication checks
   useAuthentication(isAuthenticated, handleAuthentication);
 

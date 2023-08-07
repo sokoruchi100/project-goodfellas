@@ -2,8 +2,10 @@ import React, { useEffect } from "react";
 import { Navigate } from "react-router-dom"; // Import Link and Redirect from react-router-dom
 import axios from "axios"; // Import axios
 import GoogleLoginButton from "./GoogleLoginButton";
+import { useAuth } from "./context/AuthContext";
 
-const SignUp = ({ isAuthenticated, handleAuthentication }) => {
+const SignUp = () => {
+  const { isAuthenticated, handleAuthentication } = useAuth();
   useEffect(() => {
     // Make an API call to check if the user is authenticated
     axios

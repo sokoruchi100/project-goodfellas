@@ -33,6 +33,7 @@ router.get("/ensure-auth", (req, res) => {
   }
 });
 
+//Get user-id by channel name
 router.get("/user-id", (req, res) => {
   getUserIdByChannelId(req.session.channelId, (error, userId) => {
     if (userId) {
