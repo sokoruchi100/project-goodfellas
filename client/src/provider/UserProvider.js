@@ -6,7 +6,7 @@ const UserProvider = ({ children }) => {
   const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    fetch("/user-id")
+    fetch("/api/user-id")
       .then((response) => response.json())
       .then((data) => setUserId(data.userId))
       .catch((error) => console.error("Error fetching userId:", error));

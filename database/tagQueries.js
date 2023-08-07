@@ -34,7 +34,7 @@ function linkUserWithTag(userId, tagId) {
 function deleteAllUserTags(userId) {
   return new Promise((resolve, reject) => {
     const query = "DELETE FROM UserTag WHERE userId = ?";
-    con.query(query, [userId, tagId], (error, results) => {
+    con.query(query, [userId], (error, results) => {
       if (error) {
         reject(error);
       } else {
@@ -59,32 +59,28 @@ function fetchUserTags(userId) {
   });
 }
 
+// Fetches the ID of a tag by its name
+function getTagIdByName(tag) {
+  return new Promise((resolve, reject) => {
+    const query = "SELECT id FROM Tags WHERE tag = ?";
+    con.query(query, [tag], (error, results) => {
+      if (error) {
+        reject(error);
+      } else {
+        if (results.length > 0) {
+          resolve(results[0].id); // This will return the ID of the tag
+        } else {
+          reject(new Error("No tag found with the given name."));
+        }
+      }
+    });
+  });
+}
+
 module.exports = {
   insertTag,
   linkUserWithTag,
-  deleteUserTagLink,
+  deleteAllUserTags,
   fetchUserTags,
+  getTagIdByName,
 };
-
-//FrontEnd
-//First create box that takes inputs and a save button
-//Each tag is separated by spaces
-//Turn entire string into an array of tags based on spaces, set all as lowercase
-//Get UserId and store it across the app.js
-//Send array as the body to an api call to the backend post(/userTags/{userId})
-
-//BackEnd
-//Route to get API call
-//Obtain data from body and param
-//call deleteAllUserTags
-//map through each element in array
-//insertTag, then linkUserWithTag
-
-//FrontEnd, again
-//UseEffect, performs api call Get(/userTags/{userId}),
-//Process the array of tags into a string with spaces between each elemnt
-//Display it in text field
-
-//Backend, again
-//Performs fetchUserTags with userId from param
-//Return the usertags as an array

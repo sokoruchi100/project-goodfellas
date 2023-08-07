@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { Link, Navigate } from "react-router-dom"; // Import Link from react-router-dom
 import Navbar from "./Navbar";
 import { useAuthentication } from "./hooks/useAuthentication";
 import { validateInputLength } from "./utils/validate";
 import { useAuth } from "./context/AuthContext";
+import UserContext from "./context/UserContext";
 
 const Explore = () => {
+  const userId = useContext(UserContext);
   const { isAuthenticated, handleAuthentication } = useAuth();
   // This line will automatically handle the authentication checks
   useAuthentication(isAuthenticated, handleAuthentication);
@@ -20,21 +22,9 @@ const Explore = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [isPublic, setIsPublic] = useState(true); // Set the default value to true
-  const [userId, setUserId] = useState(0);
   const [filteredCommunities, setFilteredCommunities] = useState([]);
 
   useEffect(() => {
-    //Gets User Id
-    axios
-      .get("/api/user-id", { withCredentials: true })
-      .then((response) => {
-        const userId = response.data.userId;
-        setUserId(userId);
-      })
-      .catch((error) => {
-        console.error("Error fetching user ID:", error);
-      });
-
     // Fetch data from the backend API for communities
     axios
       .get("/api/communities")

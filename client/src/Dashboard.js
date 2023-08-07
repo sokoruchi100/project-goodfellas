@@ -4,12 +4,29 @@ import Navbar from "./Navbar";
 import axios from "axios";
 import UserContext from "./context/UserContext";
 import { useAuth } from "./context/AuthContext";
+import TagBox from "./components/TagBox";
+import Button from "./components/Button";
+import { arrayToString, postTags, getTags } from "./utils/TagsUtil";
 
 function Dashboard() {
   const { isAuthenticated, handleAuthentication } = useAuth();
   const userId = useContext(UserContext);
-  const [videoTitles, setVideoTitles] = useState([]);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [tags, setTags] = useState("");
+
+  useEffect(() => {
+    if (userId) {
+      // Check if userId is available
+      // Fetching the tags for the user upon component load
+      getTags(userId)
+        .then((tagsArray) => {
+          const tagsString = arrayToString(tagsArray);
+          setTags(tagsString);
+        })
+        .catch((error) => {
+          console.error("Error fetching tags for user:", error);
+        });
+    }
+  }, [userId]);
 
   useEffect(() => {
     // Make an API call to check if the user is authenticated
@@ -23,48 +40,25 @@ function Dashboard() {
       });
   }, [isAuthenticated]);
 
-  // useEffect(() => {
-  //   fetch("/api/videos")
-  //     .then((response) => response.json())
-  //     .then((data) => setVideoTitles(data))
-  //     .catch((error) => console.error("Error fetching video titles:", error));
-  // }, []);
+  const handleTagsChange = (e) => {
+    setTags(e.target.value);
+  };
 
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      // You can use FileReader to read the selected image and display it on the screen
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedImage(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
+  const handleSubmitTags = () => {
+    postTags(userId, tags)
+      .then((response) => {
+        console.log("Tags successfully updated:", response.data);
+      })
+      .catch((error) => {
+        console.error("Error updating tags:", error);
+      });
   };
 
   return (
     <div>
       <Navbar handleAuthentication={handleAuthentication} />
-      <h1>VIDEOS</h1>
-      {/* <ul>
-        {videoTitles.map((title, index) => (
-          <li key={index}>{title}</li>
-        ))}
-      </ul> */}
-
-      {/* Button to trigger image selection*/}
-      <input type="file" accept="image/*" onChange={handleImageChange} />
-      {/* Display selected Image */}
-      {selectedImage && (
-        <div>
-          <h2>Selected Profile Picture:</h2>
-          <img
-            src={selectedImage}
-            alt="Selected Profile"
-            style={{ maxWidth: "200px" }}
-          />
-        </div>
-      )}
+      <TagBox value={tags} onChange={handleTagsChange} />
+      <Button text="Submit Tags" onClick={handleSubmitTags} />
       {!isAuthenticated && <Navigate to="/" />}
     </div>
   );

@@ -16,6 +16,7 @@ const con = require("./database/dbConnection");
 const authRoutes = require("./routes/authRoutes");
 const apiRoutes = require("./routes/apiRoutes");
 const ieRoutes = require("./routes/ieRoutes");
+const tagRoutes = require("./routes/tagRoutes");
 
 const app = express();
 const server = http.createServer(app);
@@ -53,6 +54,9 @@ app.use("/api", apiRoutes);
 
 //ieRoutes
 app.use("/inspiration-engine", ieRoutes);
+
+//tagRoutes
+app.use("/tags", tagRoutes);
 
 // Serve the output.css file with the correct MIME type
 app.get("/dist/output.css", (req, res) => {

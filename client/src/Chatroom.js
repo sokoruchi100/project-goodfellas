@@ -1,22 +1,23 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import { useParams, Navigate, useNavigate } from "react-router-dom"; // Import useParams to get the community ID from the URL
 import Navbar from "./Navbar";
 import axios from "axios";
 import socket from "./socket-client";
 import AddUserComponent from "./AddUserComponent";
 import { useAuth } from "./context/AuthContext";
+import UserContext from "./context/UserContext";
 
 const Chatroom = () => {
+  const userId = useContext(UserContext);
   const { isAuthenticated, handleAuthentication } = useAuth();
   const navigate = useNavigate();
+  const { roomCode } = useParams(); // Get the roomCode from the URL parameter
+
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  const [userId, setUserId] = useState(null);
   const [usersInRoom, setUsersInRoom] = useState([]);
   const [isOwner, setIsOwner] = useState(false);
   const [isRoomPrivate, setIsRoomPrivate] = useState(false);
-
-  const { roomCode } = useParams(); // Get the roomCode from the URL parameter
 
   const memoizedHandleAuthentication = useCallback(handleAuthentication, [
     handleAuthentication,
@@ -26,13 +27,6 @@ const Chatroom = () => {
     //WE ESCAPED CALLBACK HELL!!!
     const fetchUserDataAndRoomInfo = async () => {
       try {
-        // Fetch user ID
-        const response = await axios.get("/api/user-id", {
-          withCredentials: true,
-        });
-        const userId = response.data.userId;
-        setUserId(userId);
-
         // Check membership
         const hasJoinedResponse = await axios.get(
           `/api/has-joined/${roomCode}/${userId}`
