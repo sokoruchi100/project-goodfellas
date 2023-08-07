@@ -43,11 +43,13 @@ function addCommunityProfile(
   });
 }
 
-function fetchAllCommunitiesWithProfiles(callback) {
+function fetchAllCommunitiesWithProfilesAndTags(callback) {
   const query = `
-      SELECT c.*, cp.communityName, cp.description, cp.communityPicture, cp.isPublic
-      FROM Communities c
-      JOIN CommunityProfiles cp ON c.id = cp.communityId;
+  SELECT c.*, cp.communityName, cp.description, cp.communityPicture, cp.isPublic, t.tag
+  FROM Communities c
+  JOIN CommunityProfiles cp ON c.id = cp.communityId
+  JOIN CommunityTag ct ON ct.communityId = c.id
+  JOIN Tags t ON ct.tagId = t.id
     `;
 
   con.query(query, (error, result) => {
@@ -178,7 +180,7 @@ function checkIfUserIsAlreadyMember(userId) {
 module.exports = {
   addCommunity,
   addCommunityProfile,
-  fetchAllCommunitiesWithProfiles,
+  fetchAllCommunitiesWithProfilesAndTags,
   getCommunityIdByRoomCode,
   checkIfUserIsMember,
   addMemberToCommunity,

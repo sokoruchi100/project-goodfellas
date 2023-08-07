@@ -26,9 +26,12 @@ const getTags = (userId) => {
   });
 };
 
-const postCommunityTags = (communityId, tags) => {
+const postCommunityTags = async (communityId, tags) => {
+  console.log(communityId, tags);
   const tagsArray = stringToArray(tags);
-  return axios.post(`/tags/communityTags/${communityId}`, { tags: tagsArray });
+  return await axios.post(`/tags/communityTags/${communityId}`, {
+    tags: tagsArray,
+  });
 };
 
 const getCommunityTags = (communityId) => {

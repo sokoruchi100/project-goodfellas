@@ -90,11 +90,13 @@ const Explore = () => {
     return roomCode;
   };
 
-  const handleCreateChatroom = async () => {
+  const handleCreateChatroom = async (e) => {
+    e.preventDefault();
     //Performs checks
     if (
       !validateInputLength(name, 1, 50) ||
-      !validateInputLength(description, 1, 200)
+      !validateInputLength(description, 1, 200) ||
+      !validateInputLength(tags, 1, 255)
     ) {
       return;
     }
@@ -112,7 +114,9 @@ const Explore = () => {
         isPublic,
       });
 
-      handleSubmitTags(result.data.communityId);
+      console.log(result);
+
+      await handleSubmitTags(result.data.communityId);
 
       // Refetch the communities
       const response = await axios.get("/api/communities");
@@ -131,8 +135,9 @@ const Explore = () => {
     setTags(e.target.value);
   };
 
-  const handleSubmitTags = (communityId) => {
-    postCommunityTags(communityId, tags)
+  const handleSubmitTags = async (communityId) => {
+    console.log(tags);
+    await postCommunityTags(communityId, tags)
       .then((response) => {
         console.log("Tags successfully updated:", response.data);
       })
@@ -161,6 +166,7 @@ const Explore = () => {
             <p>Room Code: {community.roomCode}</p>
             <p>Creator ID: {community.creatorId}</p>
             <p>Date of Creation: {community.dateOfCreation}</p>
+            <p>Tags: {community.tags}</p>
           </li>
         ))}
       </ul>
@@ -192,7 +198,10 @@ const Explore = () => {
             />
           </label>
           <TagBox value={tags} onChange={handleTagsChange} />
-          <Button text="Create Chatroom" onClick={handleCreateChatroom} />
+          <Button
+            text="Create Chatroom"
+            onClick={(e) => handleCreateChatroom(e)}
+          />
         </form>
       </div>
       {!isAuthenticated && <Navigate to="/" />}

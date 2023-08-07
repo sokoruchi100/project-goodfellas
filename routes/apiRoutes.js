@@ -20,7 +20,7 @@ router.get("/videos", ensureAuthenticated, apiController.fetchVideoTitles);
 router.get(
   "/communities",
   ensureAuthenticated,
-  apiController.fetchCommunitiesAndCommunityProfiles
+  apiController.fetchCommunitiesWithProfilesAndTags
 );
 
 router.get("/ensure-auth", (req, res) => {

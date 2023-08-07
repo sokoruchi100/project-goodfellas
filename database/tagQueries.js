@@ -131,3 +131,25 @@ module.exports = {
   deleteAllCommunityTags,
   fetchCommunityTags,
 };
+
+//On explore page, search bar with text field for tags and button to find communities
+//returns all communities with same tag
+//Multiple tags, uses and to search if community contains both tags
+//if no community found, say no communities found
+//If empty, just show all tags
+//uses tag util to convert text into array of tags
+//sends array to api call that does database query
+//Join communities with communityTags and Tags WHERE tag = tag
+//Get an array of community ids for each tag
+//combine every array in a 2d array.
+//Perform a function that combines all the arrays with the same element
+
+// function commonElements(arrays) {
+//   // Start with the first array
+//   return arrays[0].filter(element =>
+//       // Check if every other array contains this element
+//       arrays.every(array => array.includes(element))
+//   );
+// }
+
+//fetchAllCommunitiesWithTags -

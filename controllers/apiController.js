@@ -1,7 +1,7 @@
 const {
   addCommunity,
   addCommunityProfile,
-  fetchAllCommunitiesWithProfiles,
+  fetchAllCommunitiesWithProfilesAndTags,
   getCommunityIdByRoomCode,
   addMemberWithCommunityId,
 } = require("../database/communityQueries");
@@ -15,12 +15,37 @@ const fetchVideoTitles = async (req, res) => {
   }
 };
 
-const fetchCommunitiesAndCommunityProfiles = (req, res) => {
-  fetchAllCommunitiesWithProfiles((error, result) => {
+const fetchCommunitiesWithProfilesAndTags = (req, res) => {
+  fetchAllCommunitiesWithProfilesAndTags((error, result) => {
     if (error) {
       res.status(500).json({ error: "Failed to fetch communities" });
     } else {
-      res.json(result);
+      const newResult = {};
+
+      result.forEach((row) => {
+        // If the community does not exist in the result, initialize it
+        if (!newResult[row.id]) {
+          newResult[row.id] = {
+            id: row.id,
+            roomCode: row.roomCode,
+            creatorId: row.creatorId,
+            dateOfCreation: row.dateOfCreation,
+            communityName: row.communityName,
+            description: row.description,
+            communityPicture: row.communityPicture,
+            isPublic: row.isPublic,
+            tags: [],
+          };
+        }
+
+        // Push the tag to the community's tags array
+        newResult[row.id].tags.push(row.tag);
+      });
+
+      // Convert the result object to an array
+      const output = Object.values(newResult);
+
+      res.json(output);
     }
   });
 };
@@ -86,6 +111,6 @@ const createCommunity = async (req, res) => {
 
 module.exports = {
   fetchVideoTitles,
-  fetchCommunitiesAndCommunityProfiles,
+  fetchCommunitiesWithProfilesAndTags,
   createCommunity,
 };
