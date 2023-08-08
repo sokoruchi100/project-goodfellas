@@ -74,9 +74,29 @@ function getUserIdByName(name) {
   });
 }
 
+function getUserProfile(userId) {
+  const query =
+    "SELECT displayName, profilePicture FROM UserProfiles WHERE userId = ?";
+  return new Promise((resolve, reject) => {
+    con.query(query, [userId], (error, results) => {
+      if (error) {
+        reject(error);
+      } else if (results.length > 0) {
+        const userProfile = results[0];
+        // Convert BLOB to string, only for urls
+        userProfile.profilePicture = userProfile.profilePicture.toString();
+        resolve(userProfile);
+      } else {
+        resolve(null);
+      }
+    });
+  });
+}
+
 module.exports = {
   addUser,
   addUserProfile,
   getUserIdByChannelId,
   getUserIdByName,
+  getUserProfile,
 };

@@ -7,15 +7,17 @@ import { useAuth } from "./context/AuthContext";
 import TagBox from "./components/TagBox";
 import Button from "./components/Button";
 import { arrayToString, postTags, getTags } from "./utils/TagsUtil";
+import TopBar from "./components/TopBar";
 
 function Dashboard() {
   const { isAuthenticated, handleAuthentication } = useAuth();
-  const userId = useContext(UserContext);
+  const { userId } = useContext(UserContext);
   const [tags, setTags] = useState("");
 
   useEffect(() => {
     if (userId) {
       // Check if userId is available
+
       // Fetching the tags for the user upon component load
       getTags(userId)
         .then((tagsArray) => {
@@ -38,7 +40,7 @@ function Dashboard() {
       .catch((error) => {
         console.error("Error checking authentication:", error);
       });
-  }, [isAuthenticated]);
+  }, [isAuthenticated, handleAuthentication]);
 
   const handleTagsChange = (e) => {
     setTags(e.target.value);
@@ -56,6 +58,7 @@ function Dashboard() {
 
   return (
     <div>
+      <TopBar />
       <Navbar handleAuthentication={handleAuthentication} />
       <TagBox value={tags} onChange={handleTagsChange} />
       <Button text="Submit Tags" onClick={handleSubmitTags} />

@@ -67,6 +67,7 @@ const createCommunity = async (req, res) => {
     // Add the chatroom to the Communities table
     addCommunity(roomCode, creatorId, new Date(), (error, communityId) => {
       if (error) {
+        //console.log("Error creating chatroom:", error);
         return res.status(500).json({ error: "Failed to create chatroom." });
       } else {
         // Add the chatroom profile to the CommunityProfiles table
@@ -78,6 +79,7 @@ const createCommunity = async (req, res) => {
           isPublic,
           (error, communityProfileId) => {
             if (error) {
+              console.log("Error creating chatroom:", error);
               return res
                 .status(500)
                 .json({ error: "Failed to create chatroom." });

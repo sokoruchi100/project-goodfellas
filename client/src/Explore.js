@@ -8,6 +8,7 @@ import { useAuth } from "./context/AuthContext";
 import UserContext from "./context/UserContext";
 import TagBox from "./components/TagBox";
 import Button from "./components/Button";
+import TopBar from "./components/TopBar";
 import {
   arrayToString,
   postCommunityTags,
@@ -15,7 +16,7 @@ import {
 } from "./utils/TagsUtil";
 
 const Explore = () => {
-  const userId = useContext(UserContext);
+  const { userId } = useContext(UserContext);
   const { isAuthenticated, handleAuthentication } = useAuth();
 
   // This line will automatically handle the authentication checks
@@ -124,6 +125,7 @@ const Explore = () => {
   };
 
   const handleCreateChatroom = async (e) => {
+    console.log("UserID from context:", userId);
     e.preventDefault();
     //Performs checks
     if (
@@ -190,6 +192,7 @@ const Explore = () => {
 
   return (
     <div>
+      <TopBar />
       <Navbar handleAuthentication={handleAuthentication} />
 
       <div>

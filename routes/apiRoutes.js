@@ -5,6 +5,7 @@ const apiController = require("../controllers/apiController");
 const {
   getUserIdByChannelId,
   getUserIdByName,
+  getUserProfile,
 } = require("../database/userQueries"); // Import the userQueries file
 const {
   checkIfUserIsMember,
@@ -16,7 +17,6 @@ const {
   deleteMembership,
 } = require("../database/communityQueries");
 const { deleteMessages } = require("../database/messageQueries");
-const { deleteCommunityTags } = require("../database/tagQueries");
 
 // Endpoint to get all video titles from the user's YouTube channel
 router.get("/videos", ensureAuthenticated, apiController.fetchVideoTitles);
@@ -46,6 +46,24 @@ router.get("/user-id", (req, res) => {
       return res.status(401).json({ message: "User not authenticated" });
     }
   });
+});
+
+//Get user profile by id
+router.get("/userprofile/:userId", async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const userProfile = await getUserProfile(userId);
+    if (userProfile) {
+      res.status(200).json({
+        displayName: userProfile.displayName,
+        profilePicture: userProfile.profilePicture,
+      });
+    } else {
+      res.status(404).json({ error: "User profile not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch user profile" });
+  }
 });
 
 // Route to create a new chatroom

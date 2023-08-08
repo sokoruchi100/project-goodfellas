@@ -6,9 +6,10 @@ import socket from "./socket-client";
 import AddUserComponent from "./AddUserComponent";
 import { useAuth } from "./context/AuthContext";
 import UserContext from "./context/UserContext";
+import TopBar from "./components/TopBar";
 
 const Chatroom = () => {
-  const userId = useContext(UserContext);
+  const { userId } = useContext(UserContext);
   const { isAuthenticated, handleAuthentication } = useAuth();
   const navigate = useNavigate();
   const { roomCode } = useParams(); // Get the roomCode from the URL parameter
@@ -140,6 +141,7 @@ const Chatroom = () => {
 
   return (
     <div>
+      <TopBar />
       <Navbar handleAuthentication={handleAuthentication} />
       <div className="chatroom">
         <h1>Chatroom {roomCode}</h1>

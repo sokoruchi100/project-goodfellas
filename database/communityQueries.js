@@ -1,6 +1,11 @@
 const con = require("./dbConnection"); // Import the MySQL connection
 
 function addCommunity(roomCode, creatorId, dateOfCreation, callback) {
+  console.log(
+    "ROOMCODE:" + roomCode,
+    "CREATORID:" + creatorId,
+    "DATE:" + dateOfCreation
+  );
   const query =
     "INSERT INTO Communities (roomCode, creatorId, dateOfCreation) VALUES (?, ?, ?)";
   const values = [roomCode, creatorId, dateOfCreation];
