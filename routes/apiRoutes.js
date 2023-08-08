@@ -11,7 +11,12 @@ const {
   addMemberToCommunity,
   checkIfCommunityIsPrivate,
   checkIfUserIsOwner,
+  deleteCommunity,
+  deleteCommunityProfile,
+  deleteMembership,
 } = require("../database/communityQueries");
+const { deleteMessages } = require("../database/messageQueries");
+const { deleteCommunityTags } = require("../database/tagQueries");
 
 // Endpoint to get all video titles from the user's YouTube channel
 router.get("/videos", ensureAuthenticated, apiController.fetchVideoTitles);
@@ -120,6 +125,14 @@ router.post("/find-user", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch user" });
   }
+});
+
+router.delete("/communities/:communityId", (req, res) => {
+  const { communityId } = req.params;
+  deleteMembership(communityId);
+  deleteMessages(communityId);
+  deleteCommunityProfile(communityId);
+  deleteCommunity(communityId);
 });
 
 module.exports = router;

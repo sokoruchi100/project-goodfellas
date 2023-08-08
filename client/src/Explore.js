@@ -147,8 +147,6 @@ const Explore = () => {
         isPublic,
       });
 
-      console.log(result);
-
       await handleSubmitTags(result.data.communityId);
 
       // Refetch the communities
@@ -173,7 +171,6 @@ const Explore = () => {
   };
 
   const handleSubmitTags = async (communityId) => {
-    console.log(tags);
     await postCommunityTags(communityId, tags)
       .then((response) => {
         console.log("Tags successfully updated:", response.data);
@@ -181,6 +178,14 @@ const Explore = () => {
       .catch((error) => {
         console.error("Error updating tags:", error);
       });
+  };
+
+  const handleCommunityDeletion = async (communityId) => {
+    axios.delete(`/api/communities/${communityId}`);
+
+    // Refetch the communities
+    const response = await axios.get("/api/communities");
+    setAllCommunities(response.data);
   };
 
   return (
@@ -250,6 +255,12 @@ const Explore = () => {
                 </Link>
                 <p>Tags: {arrayToString(community.tags)}</p>
                 <p>{community.description}</p>
+                {community.creatorId === userId && (
+                  <Button
+                    text="Delete Community"
+                    onClick={() => handleCommunityDeletion(community.id)}
+                  />
+                )}
                 <br />
               </li>
             ))}

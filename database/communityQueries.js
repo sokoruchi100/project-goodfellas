@@ -161,6 +161,36 @@ async function checkIfUserIsOwner(roomCode, userId) {
   });
 }
 
+async function deleteCommunity(communityId) {
+  const query = "DELETE FROM Communities WHERE id = ?";
+  return new Promise((resolve, reject) => {
+    con.query(query, [communityId], (error, results) => {
+      if (error) reject(error);
+      else resolve();
+    });
+  });
+}
+
+async function deleteCommunityProfile(communityId) {
+  const query = "DELETE FROM CommunityProfiles WHERE communityId = ?";
+  return new Promise((resolve, reject) => {
+    con.query(query, [communityId], (error, results) => {
+      if (error) reject(error);
+      else resolve();
+    });
+  });
+}
+
+async function deleteMembership(communityId) {
+  const query = "DELETE FROM Membership WHERE communityId = ?";
+  return new Promise((resolve, reject) => {
+    con.query(query, [communityId], (error, results) => {
+      if (error) reject(error);
+      else resolve();
+    });
+  });
+}
+
 module.exports = {
   addCommunity,
   addCommunityProfile,
@@ -171,4 +201,7 @@ module.exports = {
   addMemberWithCommunityId,
   checkIfCommunityIsPrivate,
   checkIfUserIsOwner,
+  deleteCommunity,
+  deleteCommunityProfile,
+  deleteMembership,
 };

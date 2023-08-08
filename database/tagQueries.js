@@ -121,6 +121,16 @@ function getTagIdByName(tag) {
   });
 }
 
+async function deleteCommunityTags(communityId) {
+  const query = "DELETE FROM CommunityTag WHERE communityId = ?";
+  return new Promise((resolve, reject) => {
+    con.query(query, [communityId], (error, results) => {
+      if (error) reject(error);
+      else resolve();
+    });
+  });
+}
+
 module.exports = {
   insertTag,
   linkUserWithTag,
@@ -130,6 +140,7 @@ module.exports = {
   linkCommunityWithTag,
   deleteAllCommunityTags,
   fetchCommunityTags,
+  deleteCommunityTags,
 };
 
 //On explore page, search bar with text field for tags and button to find communities

@@ -32,4 +32,14 @@ async function loadAndSendMessages(communityId) {
   });
 }
 
-module.exports = { saveMessageToDatabase, loadAndSendMessages };
+async function deleteMessages(communityId) {
+  const query = "DELETE FROM Messages WHERE communityId = ?";
+  return new Promise((resolve, reject) => {
+    con.query(query, [communityId], (error, results) => {
+      if (error) reject(error);
+      else resolve();
+    });
+  });
+}
+
+module.exports = { saveMessageToDatabase, loadAndSendMessages, deleteMessages };
