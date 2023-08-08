@@ -9,7 +9,7 @@ import UserContext from "./context/UserContext";
 import TopBar from "./components/TopBar";
 
 const Chatroom = () => {
-  const { userId } = useContext(UserContext);
+  const { userId, displayName, profilePicture } = useContext(UserContext);
   const { isAuthenticated, handleAuthentication } = useAuth();
   const navigate = useNavigate();
   const { roomCode } = useParams(); // Get the roomCode from the URL parameter
@@ -65,7 +65,7 @@ const Chatroom = () => {
       }
     };
     fetchUserDataAndRoomInfo();
-  }, [navigate, roomCode]);
+  }, [navigate, roomCode, userId]);
 
   useEffect(() => {
     // Make an API call to check if the user is authenticated
@@ -84,10 +84,15 @@ const Chatroom = () => {
     socket.emit("join-community", roomCode);
 
     // Handle incoming messages from the server
-    socket.on("new-message", ({ senderId, content }) => {
+    socket.on("new-message", ({ displayName, profilePicture, content }) => {
       setMessages((prevMessages) => [
         ...prevMessages,
-        { senderId: senderId, content: content, timeStamp: new Date() },
+        {
+          displayName: displayName,
+          profilePicture: profilePicture,
+          content: content,
+          timeStamp: new Date(),
+        },
       ]);
     });
 
@@ -121,12 +126,19 @@ const Chatroom = () => {
       const messageData = {
         roomCode: roomCode,
         senderId: userId,
+        displayName: displayName,
+        profilePicture: profilePicture,
         content: newMessage,
       };
       //If new message isn't blank, add it to messages
       setMessages((prevMessages) => [
         ...prevMessages,
-        { senderId: userId, content: newMessage, timeStamp: new Date() },
+        {
+          displayName: displayName,
+          profilePicture: profilePicture,
+          content: newMessage,
+          timeStamp: new Date(),
+        },
       ]);
       // Emit the "send-message" event to the server with the new message
       socket.emit("send-message", messageData);
@@ -155,8 +167,11 @@ const Chatroom = () => {
         {isOwner && isRoomPrivate && <AddUserComponent></AddUserComponent>}
         {messages &&
           messages.map((message, index) => (
-            <div key={index} className={`message ${message.senderId}`}>
-              {message.senderId}
+            <div key={index} className={`message`}>
+              <span>{message.displayName}</span>
+              {message.profilePicture && (
+                <img src={message.profilePicture} alt="User Profile" />
+              )}
               {message.content}
               {message.timeStamp.toLocaleString()}
             </div>

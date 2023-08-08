@@ -48,14 +48,19 @@ function initializeSocketServer(server) {
     });
 
     // Handle "send-message" event
-    socket.on(EVENTS.SEND_MESSAGE, async ({ roomCode, senderId, content }) => {
-      //Perform query to geet communityId from communities using roomCode
-      const communityId = await getCommunityIdByRoomCode(roomCode);
-      // Save the message to the database
-      await saveMessageToDatabase(communityId, { senderId, content });
-      // Broadcast the message to all clients in the room
-      socket.to(roomCode).emit(EVENTS.NEW_MESSAGE, { senderId, content });
-    });
+    socket.on(
+      EVENTS.SEND_MESSAGE,
+      async ({ roomCode, senderId, displayName, profilePicture, content }) => {
+        //Perform query to geet communityId from communities using roomCode
+        const communityId = await getCommunityIdByRoomCode(roomCode);
+        // Save the message to the database
+        await saveMessageToDatabase(communityId, { senderId, content });
+        // Broadcast the message to all clients in the room
+        socket
+          .to(roomCode)
+          .emit(EVENTS.NEW_MESSAGE, { displayName, profilePicture, content });
+      }
+    );
 
     // Handle "send-message" event
     socket.on(EVENTS.LEAVE_COMMUNITY, (roomCode) => {

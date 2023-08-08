@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom"; // Import useParams to get the community ID from the URL
 import axios from "axios"; // Assuming you are using axios for HTTP requests
 

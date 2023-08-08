@@ -16,8 +16,16 @@ async function loadAndSendMessages(communityId) {
     console.error("Invalid communityId:", communityId);
     return;
   }
-  const query =
-    "SELECT senderId, content, timeStamp FROM Messages WHERE communityId = ?";
+  const query = `
+    SELECT 
+      up.displayName,
+      up.profilePicture,
+      m.content, 
+      m.timeStamp 
+    FROM Messages m
+    JOIN UserProfiles up
+      ON up.userId = m.senderId
+    WHERE communityId = ?`;
 
   return new Promise((resolve, reject) => {
     con.query(query, [communityId], (err, result) => {
@@ -27,7 +35,14 @@ async function loadAndSendMessages(communityId) {
         reject(err);
         return;
       }
-      resolve(result);
+
+      const messages = result;
+      // Convert BLOB to string, only for urls
+      messages.forEach((row) => {
+        row.profilePicture = row.profilePicture.toString();
+      });
+
+      resolve(messages);
     });
   });
 }

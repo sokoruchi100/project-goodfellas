@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Link, Navigate } from "react-router-dom"; // Import Link and Redirect from react-router-dom
 import axios from "axios"; // Import axios
 import { useAuth } from "./context/AuthContext";
@@ -16,7 +16,7 @@ const Landing = () => {
       .catch((error) => {
         console.error("Error checking authentication:", error);
       });
-  }, [isAuthenticated]);
+  }, [isAuthenticated, handleAuthentication]);
 
   return (
     <div>

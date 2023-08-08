@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import InspirationEngine from "./InspirationEngine.js";
 import Dashboard from "./Dashboard.js";
