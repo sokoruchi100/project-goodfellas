@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useCallback } from "react";
 import axios from "axios";
 import { Link, Navigate } from "react-router-dom"; // Import Link from react-router-dom
 import Navbar from "./Navbar";
@@ -8,12 +8,16 @@ import { useAuth } from "./context/AuthContext";
 import UserContext from "./context/UserContext";
 import TagBox from "./components/TagBox";
 import Button from "./components/Button";
-import { arrayToString, postCommunityTags, getTags } from "./utils/TagsUtil";
+import {
+  arrayToString,
+  postCommunityTags,
+  stringToArray,
+} from "./utils/TagsUtil";
 
 const Explore = () => {
   const userId = useContext(UserContext);
   const { isAuthenticated, handleAuthentication } = useAuth();
-  const [tags, setTags] = useState("");
+
   // This line will automatically handle the authentication checks
   useAuthentication(isAuthenticated, handleAuthentication);
 
@@ -22,18 +26,20 @@ const Explore = () => {
 
   // State to handle whether to show public or private communities
   const [showPublicCommunities, setShowPublicCommunities] = useState(true);
-  const [communities, setCommunities] = useState([]);
+  const [allCommunities, setAllCommunities] = useState([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [isPublic, setIsPublic] = useState(true); // Set the default value to true
   const [filteredCommunities, setFilteredCommunities] = useState([]);
+  const [tags, setTags] = useState("");
+  const [searchTags, setSearchTags] = useState("");
 
   useEffect(() => {
     // Fetch data from the backend API for communities
     axios
       .get("/api/communities")
       .then((response) => {
-        setCommunities(response.data);
+        setAllCommunities(response.data);
       })
       .catch((error) => {
         console.error("Error fetching communities:", error);
@@ -50,9 +56,8 @@ const Explore = () => {
     setShowPublicCommunities(false);
   };
 
-  // Function to filter the communities based on public and private states
-  useEffect(() => {
-    const fetchFilteredCommunities = async () => {
+  const filerIfPublicOrPrivate = useCallback(
+    async (communities) => {
       const results = [];
 
       for (const community of communities) {
@@ -71,11 +76,39 @@ const Explore = () => {
           }
         }
       }
-      setFilteredCommunities(results);
-    };
+      return results;
+    },
+    [showPublicCommunities, userId]
+  );
 
-    fetchFilteredCommunities();
-  }, [communities, showPublicCommunities, userId]);
+  // Function to filter the communities based on public and private states
+  useEffect(() => {
+    filerIfPublicOrPrivate(allCommunities).then((results) => {
+      setFilteredCommunities(results);
+    });
+  }, [allCommunities, filerIfPublicOrPrivate]);
+
+  const handleSearch = () => {
+    let communities = [];
+    if (searchTags === "") {
+      communities = allCommunities;
+    } else {
+      const searchTagsArray = stringToArray(searchTags);
+
+      allCommunities.forEach((community) => {
+        const allTagsPresent = searchTagsArray.every((tag) =>
+          community.tags.includes(tag)
+        );
+        if (allTagsPresent) {
+          communities.push(community);
+        }
+      });
+    }
+
+    filerIfPublicOrPrivate(communities).then((results) => {
+      setFilteredCommunities(results);
+    });
+  };
 
   const generateRoomCode = () => {
     const roomCodeLength = 25;
@@ -120,7 +153,7 @@ const Explore = () => {
 
       // Refetch the communities
       const response = await axios.get("/api/communities");
-      setCommunities(response.data);
+      setAllCommunities(response.data);
 
       // Clear the form fields
       setName("");
@@ -133,6 +166,10 @@ const Explore = () => {
 
   const handleTagsChange = (e) => {
     setTags(e.target.value);
+  };
+
+  const handleSearchTagsChange = (e) => {
+    setSearchTags(e.target.value);
   };
 
   const handleSubmitTags = async (communityId) => {
@@ -149,61 +186,76 @@ const Explore = () => {
   return (
     <div>
       <Navbar handleAuthentication={handleAuthentication} />
-      <h1>Communities</h1>
-      {/* Toggle button to show public communities */}
-      <button onClick={handleShowPublicCommunities}>Explore</button>
-      {/* Toggle button to show private communities */}
-      <button onClick={handleShowPrivateCommunities}>My Communities</button>
-      <ul>
-        {/* Render the filtered communities */}
-        {filteredCommunities.map((community) => (
-          <li key={community.id}>
-            <Link to={`/communities/chatroom/${community.roomCode}`}>
-              <h2>{community.communityName}</h2>
-            </Link>
-            <p>{community.description}</p>
-            <p>{community.isPublic ? "Public" : "Private"}</p>
-            <p>Room Code: {community.roomCode}</p>
-            <p>Creator ID: {community.creatorId}</p>
-            <p>Date of Creation: {community.dateOfCreation}</p>
-            <p>Tags: {community.tags}</p>
-          </li>
-        ))}
-      </ul>
+
       <div>
-        <h2>Create a New Chatroom</h2>
-        <form>
-          <label>
-            Name:
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+        <h1>Communities</h1>
+
+        <div>
+          <h2>Create a New Chatroom</h2>
+          <form>
+            <label>
+              Name:
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </label>
+            <label>
+              Description:
+              <input
+                type="text"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </label>
+            <label>
+              Public:
+              <input
+                type="checkbox"
+                checked={isPublic}
+                onChange={(e) => setIsPublic(e.target.checked)}
+              />
+            </label>
+            <TagBox value={tags} onChange={handleTagsChange} />
+            <Button
+              text="Create Chatroom"
+              onClick={(e) => handleCreateChatroom(e)}
             />
-          </label>
-          <label>
-            Description:
-            <input
-              type="text"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </label>
-          <label>
-            Public:
-            <input
-              type="checkbox"
-              checked={isPublic}
-              onChange={(e) => setIsPublic(e.target.checked)}
-            />
-          </label>
-          <TagBox value={tags} onChange={handleTagsChange} />
-          <Button
-            text="Create Chatroom"
-            onClick={(e) => handleCreateChatroom(e)}
-          />
-        </form>
+          </form>
+        </div>
+
+        <Button text="Explore" onClick={handleShowPublicCommunities}></Button>
+
+        <Button
+          text="My Communities"
+          onClick={handleShowPrivateCommunities}
+        ></Button>
       </div>
+
+      <div>
+        <div>
+          {/* Search Bar */}
+          <TagBox value={searchTags} onChange={handleSearchTagsChange} />
+          <Button text="Search Tags" onClick={handleSearch} />
+        </div>
+
+        <ul>
+          {/* Render the filtered communities */}
+          {Array.isArray(filteredCommunities) &&
+            filteredCommunities.map((community) => (
+              <li key={community.id}>
+                <Link to={`/communities/chatroom/${community.roomCode}`}>
+                  <h2>{community.communityName}</h2>
+                </Link>
+                <p>Tags: {arrayToString(community.tags)}</p>
+                <p>{community.description}</p>
+                <br />
+              </li>
+            ))}
+        </ul>
+      </div>
+
       {!isAuthenticated && <Navigate to="/" />}
     </div>
   );
