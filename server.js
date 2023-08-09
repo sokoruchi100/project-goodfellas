@@ -6,6 +6,7 @@ const crypto = require("crypto");
 const sharedSession = require("express-socket.io-session");
 const cors = require("cors");
 const path = require("path");
+const multer = require("multer");
 
 //Files
 const passportSetup = require("./passport-setup"); // Import the passport setup file
@@ -17,6 +18,16 @@ const authRoutes = require("./routes/authRoutes");
 const apiRoutes = require("./routes/apiRoutes");
 const ieRoutes = require("./routes/ieRoutes");
 const tagRoutes = require("./routes/tagRoutes");
+
+// Configure multer for image storage
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "./uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Appends the original file extension
+  },
+});
 
 const app = express();
 const server = http.createServer(app);
@@ -46,16 +57,25 @@ io.use(
   })
 );
 
-// authRoutes
+const upload = multer({ storage: storage });
+
+app.post("/upload", upload.single("image"), (req, res) => {
+  console.log("IMAGE RECEIVED");
+  if (req.file) {
+    res.json({
+      imageUrl: `http://localhost:5000/uploads/${req.file.filename}`,
+    });
+  } else {
+    res.status(400).json({ error: "There was an error uploading the image" });
+  }
+});
+
+app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
+
+//Route Middlewares
 app.use("/auth", authRoutes);
-
-// apiRoutes
 app.use("/api", apiRoutes);
-
-//ieRoutes
 app.use("/inspiration-engine", ieRoutes);
-
-//tagRoutes
 app.use("/tags", tagRoutes);
 
 // Serve the output.css file with the correct MIME type

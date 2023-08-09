@@ -1,22 +1,19 @@
 const con = require("./dbConnection"); // Import the MySQL connection
 
-function addCommunity(roomCode, creatorId, dateOfCreation, callback) {
-  console.log(
-    "ROOMCODE:" + roomCode,
-    "CREATORID:" + creatorId,
-    "DATE:" + dateOfCreation
-  );
-  const query =
-    "INSERT INTO Communities (roomCode, creatorId, dateOfCreation) VALUES (?, ?, ?)";
-  const values = [roomCode, creatorId, dateOfCreation];
+function addCommunity(roomCode, creatorId, dateOfCreation) {
+  return new Promise((resolve, reject) => {
+    const query =
+      "INSERT INTO Communities (roomCode, creatorId, dateOfCreation) VALUES (?, ?, ?)";
+    const values = [roomCode, creatorId, dateOfCreation];
 
-  con.query(query, values, (error, result) => {
-    if (error) {
-      callback(error, null);
-    } else {
-      const communityId = result.insertId;
-      callback(null, communityId);
-    }
+    con.query(query, values, (error, result) => {
+      if (error) {
+        reject(error);
+      } else {
+        const communityId = result.insertId;
+        resolve(communityId);
+      }
+    });
   });
 }
 
@@ -25,26 +22,27 @@ function addCommunityProfile(
   communityName,
   description,
   communityPicture,
-  isPublic,
-  callback
+  isPublic
 ) {
-  const query =
-    "INSERT INTO CommunityProfiles (communityId, communityName, description, communityPicture, isPublic) VALUES (?, ?, ?, ?, ?)";
-  const values = [
-    communityId,
-    communityName,
-    description,
-    communityPicture,
-    isPublic,
-  ];
+  return new Promise((resolve, reject) => {
+    const query =
+      "INSERT INTO CommunityProfiles (communityId, communityName, description, communityPicture, isPublic) VALUES (?, ?, ?, ?, ?)";
+    const values = [
+      communityId,
+      communityName,
+      description,
+      communityPicture,
+      isPublic,
+    ];
 
-  con.query(query, values, (error, result) => {
-    if (error) {
-      callback(error, null);
-    } else {
-      const communityProfileId = result.insertId;
-      callback(null, communityProfileId);
-    }
+    con.query(query, values, (error, result) => {
+      if (error) {
+        reject(error);
+      } else {
+        const communityProfileId = result.insertId;
+        resolve(communityProfileId);
+      }
+    });
   });
 }
 
@@ -123,16 +121,18 @@ async function addMemberToCommunity(userId, roomCode) {
   }
 }
 
-function addMemberWithCommunityId(communityId, userId, callback) {
-  const query = "INSERT INTO Membership (communityId, userId) VALUES (?, ?)";
-  const values = [communityId, userId];
+function addMemberWithCommunityId(communityId, userId) {
+  return new Promise((resolve, reject) => {
+    const query = "INSERT INTO Membership (communityId, userId) VALUES (?, ?)";
+    const values = [communityId, userId];
 
-  con.query(query, values, (error, result) => {
-    if (error) {
-      callback(error, null);
-    } else {
-      callback(null, result);
-    }
+    con.query(query, values, (error, result) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result);
+      }
+    });
   });
 }
 

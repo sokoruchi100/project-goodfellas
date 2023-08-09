@@ -51,11 +51,23 @@ const fetchCommunitiesWithProfilesAndTags = (req, res) => {
 };
 
 // Controller to create a new community
-const createCommunity = async (req, res) => {
-  const { roomCode, creatorId, communityName, description, isPublic } =
-    req.body;
-
+const createCommunity = async ({ body }, res) => {
   try {
+    const {
+      roomCode,
+      creatorId,
+      communityName,
+      description,
+      isPublic,
+      communityPicture,
+    } = body;
+
+    console.log(body);
+
+    if (!communityPicture) {
+      return res.status(400).send({ message: "Image is required" });
+    }
+
     // Check if a chatroom with the same roomCode already exists
     const existingCommunityId = await getCommunityIdByRoomCode(roomCode);
     if (existingCommunityId) {
@@ -65,45 +77,23 @@ const createCommunity = async (req, res) => {
     }
 
     // Add the chatroom to the Communities table
-    addCommunity(roomCode, creatorId, new Date(), (error, communityId) => {
-      if (error) {
-        //console.log("Error creating chatroom:", error);
-        return res.status(500).json({ error: "Failed to create chatroom." });
-      } else {
-        // Add the chatroom profile to the CommunityProfiles table
-        addCommunityProfile(
-          communityId,
-          communityName,
-          description,
-          "",
-          isPublic,
-          (error, communityProfileId) => {
-            if (error) {
-              console.log("Error creating chatroom:", error);
-              return res
-                .status(500)
-                .json({ error: "Failed to create chatroom." });
-            } else {
-              addMemberWithCommunityId(
-                communityId,
-                creatorId,
-                (error, result) => {
-                  if (error) {
-                    return res.status(500).json({
-                      error: "Failed to add creator to the membership table.",
-                    });
-                  } else {
-                    return res.status(201).json({
-                      message: "Chatroom created successfully.",
-                      communityId,
-                    });
-                  }
-                }
-              );
-            }
-          }
-        );
-      }
+    const communityId = await addCommunity(roomCode, creatorId, new Date());
+
+    // Add the chatroom profile to the CommunityProfiles table
+    await addCommunityProfile(
+      communityId,
+      communityName,
+      description,
+      communityPicture,
+      isPublic
+    );
+
+    // Add the creator to the members table
+    await addMemberWithCommunityId(communityId, creatorId);
+
+    return res.status(201).json({
+      message: "Chatroom created successfully.",
+      communityId,
     });
   } catch (error) {
     console.error("Error creating chatroom:", error);

@@ -9,6 +9,7 @@ import UserContext from "./context/UserContext";
 import TagBox from "./components/TagBox";
 import Button from "./components/Button";
 import TopBar from "./components/TopBar";
+import ImageUpload from "./components/ImageUpload";
 import {
   arrayToString,
   postCommunityTags,
@@ -34,17 +35,19 @@ const Explore = () => {
   const [filteredCommunities, setFilteredCommunities] = useState([]);
   const [tags, setTags] = useState("");
   const [searchTags, setSearchTags] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+
+  const getCommunities = async () => {
+    try {
+      const response = await axios.get("/api/communities");
+      setAllCommunities(response.data);
+    } catch (error) {
+      console.error("Error fetching communities:", error);
+    }
+  };
 
   useEffect(() => {
-    // Fetch data from the backend API for communities
-    axios
-      .get("/api/communities")
-      .then((response) => {
-        setAllCommunities(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching communities:", error);
-      });
+    getCommunities();
   }, []); // Empty dependency array to run the effect only once
 
   // Function to toggle the state for showing public communities
@@ -57,7 +60,7 @@ const Explore = () => {
     setShowPublicCommunities(false);
   };
 
-  const filerIfPublicOrPrivate = useCallback(
+  const filterIfPublicOrPrivate = useCallback(
     async (communities) => {
       const results = [];
 
@@ -84,10 +87,10 @@ const Explore = () => {
 
   // Function to filter the communities based on public and private states
   useEffect(() => {
-    filerIfPublicOrPrivate(allCommunities).then((results) => {
+    filterIfPublicOrPrivate(allCommunities).then((results) => {
       setFilteredCommunities(results);
     });
-  }, [allCommunities, filerIfPublicOrPrivate]);
+  }, [allCommunities, filterIfPublicOrPrivate]);
 
   const handleSearch = () => {
     let communities = [];
@@ -106,7 +109,7 @@ const Explore = () => {
       });
     }
 
-    filerIfPublicOrPrivate(communities).then((results) => {
+    filterIfPublicOrPrivate(communities).then((results) => {
       setFilteredCommunities(results);
     });
   };
@@ -125,7 +128,6 @@ const Explore = () => {
   };
 
   const handleCreateChatroom = async (e) => {
-    console.log("UserID from context:", userId);
     e.preventDefault();
     //Performs checks
     if (
@@ -142,11 +144,12 @@ const Explore = () => {
     // Make an API call to store the new chatroom in the database
     try {
       const result = await axios.post("/api/create-community", {
-        roomCode,
+        roomCode: roomCode,
         creatorId: userId,
         communityName: name,
-        description,
-        isPublic,
+        description: description,
+        isPublic: isPublic,
+        communityPicture: imageUrl,
       });
 
       await handleSubmitTags(result.data.communityId);
@@ -183,11 +186,18 @@ const Explore = () => {
   };
 
   const handleCommunityDeletion = async (communityId) => {
-    axios.delete(`/api/communities/${communityId}`);
-
-    // Refetch the communities
-    const response = await axios.get("/api/communities");
-    setAllCommunities(response.data);
+    axios
+      .delete(`/api/communities/${communityId}`)
+      .then((response) => {
+        // Handle successful deletion
+        // Refetch the communities
+        const communitiesResponse = axios.get("/api/communities");
+        setAllCommunities(communitiesResponse.data);
+      })
+      .catch((error) => {
+        console.error("Error deleting community:", error);
+        // Provide feedback to the user that deletion failed
+      });
   };
 
   return (
@@ -208,6 +218,10 @@ const Explore = () => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
+            </label>
+            <label>
+              Profile Picture:
+              <ImageUpload imageUrl={imageUrl} setImageUrl={setImageUrl} />
             </label>
             <label>
               Description:
@@ -256,6 +270,7 @@ const Explore = () => {
                 <Link to={`/communities/chatroom/${community.roomCode}`}>
                   <h2>{community.communityName}</h2>
                 </Link>
+                <img src={community.communityPicture} alt="" />
                 <p>Tags: {arrayToString(community.tags)}</p>
                 <p>{community.description}</p>
                 {community.creatorId === userId && (
