@@ -11,6 +11,7 @@ function addCommunity(roomCode, creatorId, dateOfCreation) {
         reject(error);
       } else {
         const communityId = result.insertId;
+        console.log("COMMUNITY ID IN DATABASE QUERY: ", communityId);
         resolve(communityId);
       }
     });

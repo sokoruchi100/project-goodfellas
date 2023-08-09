@@ -83,8 +83,6 @@ function getUserProfile(userId) {
         reject(error);
       } else if (results.length > 0) {
         const userProfile = results[0];
-        // Convert BLOB to string, only for urls
-        userProfile.profilePicture = userProfile.profilePicture.toString();
         resolve(userProfile);
       } else {
         resolve(null);

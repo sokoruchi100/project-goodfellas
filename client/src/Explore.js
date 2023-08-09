@@ -186,18 +186,17 @@ const Explore = () => {
   };
 
   const handleCommunityDeletion = async (communityId) => {
-    axios
-      .delete(`/api/communities/${communityId}`)
-      .then((response) => {
-        // Handle successful deletion
-        // Refetch the communities
-        const communitiesResponse = axios.get("/api/communities");
-        setAllCommunities(communitiesResponse.data);
-      })
-      .catch((error) => {
-        console.error("Error deleting community:", error);
-        // Provide feedback to the user that deletion failed
-      });
+    try {
+      await axios.delete(`/api/communities/${communityId}`);
+
+      // Handle successful deletion
+      // Refetch the communities
+      const communitiesResponse = await axios.get("/api/communities");
+      setAllCommunities(communitiesResponse.data);
+    } catch (error) {
+      console.error("Error deleting or fetching communities:", error);
+      // Provide feedback to the user that deletion or fetching failed
+    }
   };
 
   return (

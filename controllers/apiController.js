@@ -62,8 +62,6 @@ const createCommunity = async ({ body }, res) => {
       communityPicture,
     } = body;
 
-    console.log(body);
-
     if (!communityPicture) {
       return res.status(400).send({ message: "Image is required" });
     }
@@ -78,7 +76,7 @@ const createCommunity = async ({ body }, res) => {
 
     // Add the chatroom to the Communities table
     const communityId = await addCommunity(roomCode, creatorId, new Date());
-
+    console.log("COMMUNITY ID AFTER AWAIT: ", communityId);
     // Add the chatroom profile to the CommunityProfiles table
     await addCommunityProfile(
       communityId,

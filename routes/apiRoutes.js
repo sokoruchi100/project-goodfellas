@@ -84,7 +84,6 @@ router.get("/has-joined/:roomCode/:userId", async (req, res) => {
 // Route to add a user to the Membership table
 router.post("/add-to-membership", async (req, res) => {
   const { userId, roomCode } = req.body;
-  console.log("USER ID:" + userId);
   try {
     const isAlreadyMember = await checkIfUserIsMember(roomCode, userId);
     if (isAlreadyMember) {

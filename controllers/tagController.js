@@ -61,7 +61,6 @@ const getCommunityTags = async (req, res) => {
 
 const postCommunityTags = async (req, res) => {
   try {
-    console.log(req);
     const communityId = req.params.communityId;
     const tagsArray = req.body.tags;
 
