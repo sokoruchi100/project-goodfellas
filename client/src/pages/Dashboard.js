@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Navigate } from "react-router-dom";
-import Navbar from "./Navbar";
+import Navbar from "../components/Navbar";
 import axios from "axios";
-import UserContext from "./context/UserContext";
-import { useAuth } from "./context/AuthContext";
-import TagBox from "./components/TagBox";
-import Button from "./components/Button";
-import { arrayToString, postTags, getTags } from "./utils/TagsUtil";
-import TopBar from "./components/TopBar";
+import UserContext from "../context/UserContext";
+import { useAuth } from "../context/AuthContext";
+import TagBox from "../components/TagBox";
+import Button from "../components/Button";
+import { arrayToString, postTags, getTags } from "../utils/TagsUtil";
+import TopBar from "../components/TopBar";
 
 function Dashboard() {
   const { isAuthenticated, handleAuthentication } = useAuth();

@@ -1,20 +1,20 @@
 import React, { useEffect, useState, useContext, useCallback } from "react";
 import axios from "axios";
 import { Link, Navigate } from "react-router-dom"; // Import Link from react-router-dom
-import Navbar from "./Navbar";
-import { useAuthentication } from "./hooks/useAuthentication";
-import { validateInputLength } from "./utils/validate";
-import { useAuth } from "./context/AuthContext";
-import UserContext from "./context/UserContext";
-import TagBox from "./components/TagBox";
-import Button from "./components/Button";
-import TopBar from "./components/TopBar";
-import ImageUpload from "./components/ImageUpload";
+import Navbar from "../components/Navbar";
+import { useAuthentication } from "../hooks/useAuthentication";
+import { validateInputLength } from "../utils/validate";
+import { useAuth } from "../context/AuthContext";
+import UserContext from "../context/UserContext";
+import TagBox from "../components/TagBox";
+import Button from "../components/Button";
+import TopBar from "../components/TopBar";
+import ImageUpload from "../components/ImageUpload";
 import {
   arrayToString,
   postCommunityTags,
   stringToArray,
-} from "./utils/TagsUtil";
+} from "../utils/TagsUtil";
 
 const Explore = () => {
   const { userId } = useContext(UserContext);

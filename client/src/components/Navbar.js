@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom"; // Assuming you are using React Router for navigation
 import axios from "axios";
-import { useAuth } from "./context/AuthContext";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const { handleAuthentication } = useAuth();

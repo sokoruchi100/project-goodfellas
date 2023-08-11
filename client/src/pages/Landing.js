@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
-import { Navigate } from "react-router-dom"; // Import Link and Redirect from react-router-dom
+import { Link, Navigate } from "react-router-dom"; // Import Link and Redirect from react-router-dom
 import axios from "axios"; // Import axios
-import GoogleLoginButton from "./GoogleLoginButton";
-import { useAuth } from "./context/AuthContext";
+import { useAuth } from "../context/AuthContext";
 
-const SignUp = () => {
+const Landing = () => {
   const { isAuthenticated, handleAuthentication } = useAuth();
+
   useEffect(() => {
     // Make an API call to check if the user is authenticated
     axios
@@ -18,15 +18,13 @@ const SignUp = () => {
       });
   }, [isAuthenticated, handleAuthentication]);
 
-  const handleGoogleLogin = () => {
-    // Replace "http://localhost:5000/auth/google" with your backend API endpoint for Google OAuth
-    window.location.href = "http://localhost:5000/auth/google";
-  };
-
   return (
     <div>
-      <h1>Click the Google Login Button Below to login</h1>
-      <GoogleLoginButton onClick={handleGoogleLogin}></GoogleLoginButton>
+      <h1>Welcome to VisionVault</h1>
+      <p>Please log in to connect to your YouTube account:</p>
+      <Link to="/signup">
+        <button>Sign Up</button>
+      </Link>
 
       {/* Redirect to Dashboard if authenticated */}
       {isAuthenticated && <Navigate to="/dashboard" />}
@@ -34,4 +32,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default Landing;

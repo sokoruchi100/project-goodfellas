@@ -1,11 +1,11 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import InspirationEngine from "./InspirationEngine.js";
-import Dashboard from "./Dashboard.js";
-import Explore from "./Explore";
-import Chatroom from "./Chatroom";
-import Landing from "./Landing";
-import SignUp from "./SignUp.js";
+import InspirationEngine from "./pages/InspirationEngine.js";
+import Dashboard from "./pages/Dashboard.js";
+import Explore from "./pages/Explore";
+import Chatroom from "./pages/Chatroom";
+import Landing from "./pages/Landing";
+import SignUp from "./pages/SignUp.js";
 import UserProvider from "./provider/UserProvider.js";
 import { AuthProvider } from "./context/AuthContext.js";
 

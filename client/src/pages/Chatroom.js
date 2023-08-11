@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback, useContext } from "react";
 import { useParams, Navigate, useNavigate } from "react-router-dom"; // Import useParams to get the community ID from the URL
-import Navbar from "./Navbar";
+import Navbar from "../components/Navbar";
 import axios from "axios";
-import socket from "./socket-client";
-import AddUserComponent from "./AddUserComponent";
-import { useAuth } from "./context/AuthContext";
-import UserContext from "./context/UserContext";
-import TopBar from "./components/TopBar";
+import socket from "../socket-client";
+import AddUserComponent from "../components/AddUserComponent";
+import { useAuth } from "../context/AuthContext";
+import UserContext from "../context/UserContext";
+import TopBar from "../components/TopBar";
 
 const Chatroom = () => {
   const { userId, displayName, profilePicture } = useContext(UserContext);
