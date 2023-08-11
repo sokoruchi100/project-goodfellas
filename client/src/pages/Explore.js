@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext, useCallback } from "react";
 import axios from "axios";
-import { Link, Navigate } from "react-router-dom"; // Import Link from react-router-dom
+import { Navigate } from "react-router-dom"; // Import Link from react-router-dom
 import Navbar from "../components/Navbar";
 import { useAuthentication } from "../hooks/useAuthentication";
 import { validateInputLength } from "../utils/validate";
@@ -10,11 +10,8 @@ import TagBox from "../components/TagBox";
 import Button from "../components/Button";
 import TopBar from "../components/TopBar";
 import ImageUpload from "../components/ImageUpload";
-import {
-  arrayToString,
-  postCommunityTags,
-  stringToArray,
-} from "../utils/TagsUtil";
+import { postCommunityTags, stringToArray } from "../utils/TagsUtil";
+import CommunityCard from "../components/CommunityCard";
 
 const Explore = () => {
   const { userId } = useContext(UserContext);
@@ -261,27 +258,18 @@ const Explore = () => {
           <Button text="Search Tags" onClick={handleSearch} />
         </div>
 
-        <ul>
+        <div className="flex flex-wrap">
           {/* Render the filtered communities */}
           {Array.isArray(filteredCommunities) &&
             filteredCommunities.map((community) => (
-              <li key={community.id}>
-                <Link to={`/communities/chatroom/${community.roomCode}`}>
-                  <h2>{community.communityName}</h2>
-                </Link>
-                <img src={community.communityPicture} alt="" />
-                <p>Tags: {arrayToString(community.tags)}</p>
-                <p>{community.description}</p>
-                {community.creatorId === userId && (
-                  <Button
-                    text="Delete Community"
-                    onClick={() => handleCommunityDeletion(community.id)}
-                  />
-                )}
-                <br />
-              </li>
+              <CommunityCard
+                key={community.id}
+                community={community}
+                handleCommunityDeletion={handleCommunityDeletion}
+                userId={userId}
+              />
             ))}
-        </ul>
+        </div>
       </div>
 
       {!isAuthenticated && <Navigate to="/" />}
