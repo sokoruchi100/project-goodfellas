@@ -1,5 +1,3 @@
-// database/userQueries.js
-
 const con = require("./dbConnection"); // Import the MySQL connection
 
 function addUser(id, username, callback) {

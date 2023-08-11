@@ -12,7 +12,7 @@ const UserProvider = ({ children }) => {
   // Fetching user ID
   useEffect(() => {
     axios
-      .get("/api/user-id")
+      .get("/users/id")
       .then((response) => {
         const data = response.data;
         setUser((prev) => ({ ...prev, userId: data.userId }));
@@ -24,7 +24,7 @@ const UserProvider = ({ children }) => {
   useEffect(() => {
     if (user.userId) {
       axios
-        .get(`/api/userprofile/${user.userId}`)
+        .get(`/users/profile/${user.userId}`)
         .then((response) => {
           const data = response.data;
           setUser((prevState) => ({

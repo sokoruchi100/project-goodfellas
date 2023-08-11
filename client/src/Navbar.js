@@ -10,7 +10,7 @@ const Navbar = () => {
   const handleLogout = () => {
     // Make an API call to logout
     axios
-      .get("/auth/logout", { withCredentials: true })
+      .post("/auth/logout", { withCredentials: true })
       .then(() => {
         // On successful logout, navigate to the landing page
         handleAuthentication(false);

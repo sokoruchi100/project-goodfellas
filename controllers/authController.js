@@ -1,7 +1,19 @@
-const con = require("../database/dbConnection"); // Import the MySQL connection
+const passportSetup = require("../passport-setup");
 const { addUser, addUserProfile } = require("../database/userQueries"); // Import the userQueries file
 const { fetchChannelDataAndVideoTitles } = require("../youtube-api"); // Import the YouTube API functions
 const { getUserIdByChannelId } = require("../database/userQueries");
+
+const authenticate = passportSetup.authenticate("google", {
+  scope: [
+    "profile",
+    "email",
+    "https://www.googleapis.com/auth/youtube.readonly",
+  ],
+});
+
+const authenticateCallback = passportSetup.authenticate("google", {
+  failureRedirect: "/login-failed",
+});
 
 const handleGoogleCallback = async (req, res) => {
   try {
@@ -48,7 +60,20 @@ const logout = (req, res) => {
   });
 };
 
+const ensureAuthenticated = (req, res) => {
+  if (req.isAuthenticated()) {
+    // User is authenticated
+    res.json({ isAuthenticated: true });
+  } else {
+    // User is not authenticated
+    res.json({ isAuthenticated: false });
+  }
+};
+
 module.exports = {
+  authenticate,
   handleGoogleCallback,
+  authenticateCallback,
   logout,
+  ensureAuthenticated,
 };

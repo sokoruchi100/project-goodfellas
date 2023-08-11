@@ -9,7 +9,7 @@ const SignUp = () => {
   useEffect(() => {
     // Make an API call to check if the user is authenticated
     axios
-      .get("/api/ensure-auth", { withCredentials: true })
+      .get("/auth/ensure", { withCredentials: true })
       .then((response) => {
         handleAuthentication(response.data.isAuthenticated);
       })

@@ -10,11 +10,11 @@ const AddUserComponent = () => {
 
   const handleAddMember = async () => {
     try {
-      const response = await axios.post(`/api/find-user`, { name: userName });
+      const response = await axios.get(`/users/find-user/${userName}`);
       const userId = response.data.userId;
 
       if (userId) {
-        const addResponse = await axios.post(`/api/add-to-membership`, {
+        const addResponse = await axios.post(`/membership`, {
           userId: userId,
           roomCode: roomCode,
         });

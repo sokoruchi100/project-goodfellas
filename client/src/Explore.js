@@ -39,7 +39,7 @@ const Explore = () => {
 
   const getCommunities = async () => {
     try {
-      const response = await axios.get("/api/communities");
+      const response = await axios.get("/communities");
       setAllCommunities(response.data);
     } catch (error) {
       console.error("Error fetching communities:", error);
@@ -69,9 +69,9 @@ const Explore = () => {
           results.push(community); // Include the community object in the results
         } else if (!showPublicCommunities && !community.isPublic) {
           try {
-            const response = await axios.get("/api/is-user-member", {
-              params: { roomCode: community.roomCode, userId },
-            });
+            const response = await axios.get(
+              `/membership/is-member/${community.roomCode}/${userId}`
+            );
             if (response.data.isMember) {
               results.push(community); // Include the community object in the results
             }
@@ -143,7 +143,7 @@ const Explore = () => {
 
     // Make an API call to store the new chatroom in the database
     try {
-      const result = await axios.post("/api/create-community", {
+      const result = await axios.post("/communities", {
         roomCode: roomCode,
         creatorId: userId,
         communityName: name,
@@ -155,7 +155,7 @@ const Explore = () => {
       await handleSubmitTags(result.data.communityId);
 
       // Refetch the communities
-      const response = await axios.get("/api/communities");
+      const response = await axios.get("/communities");
       setAllCommunities(response.data);
 
       // Clear the form fields
@@ -187,11 +187,11 @@ const Explore = () => {
 
   const handleCommunityDeletion = async (communityId) => {
     try {
-      await axios.delete(`/api/communities/${communityId}`);
+      await axios.delete(`/communities/${communityId}`);
 
       // Handle successful deletion
       // Refetch the communities
-      const communitiesResponse = await axios.get("/api/communities");
+      const communitiesResponse = await axios.get("/communities");
       setAllCommunities(communitiesResponse.data);
     } catch (error) {
       console.error("Error deleting or fetching communities:", error);

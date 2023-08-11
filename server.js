@@ -18,6 +18,9 @@ const authRoutes = require("./routes/authRoutes");
 const apiRoutes = require("./routes/apiRoutes");
 const ieRoutes = require("./routes/ieRoutes");
 const tagRoutes = require("./routes/tagRoutes");
+const userRoutes = require("./routes/userRoutes");
+const communityRoutes = require("./routes/communityRoutes");
+const membershipRoutes = require("./routes/membershipRoutes");
 
 // Configure multer for image storage
 const storage = multer.diskStorage({
@@ -77,6 +80,9 @@ app.use("/auth", authRoutes);
 app.use("/api", apiRoutes);
 app.use("/inspiration-engine", ieRoutes);
 app.use("/tags", tagRoutes);
+app.use("/users", userRoutes);
+app.use("/communities", communityRoutes);
+app.use("/membership", membershipRoutes);
 
 // Serve the output.css file with the correct MIME type
 app.get("/dist/output.css", (req, res) => {

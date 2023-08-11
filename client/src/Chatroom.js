@@ -29,21 +29,21 @@ const Chatroom = () => {
     const fetchUserDataAndRoomInfo = async () => {
       try {
         // Check membership
-        const hasJoinedResponse = await axios.get(
-          `/api/has-joined/${roomCode}/${userId}`
+        const isMemberResponse = await axios.get(
+          `/membership/is-member/${roomCode}/${userId}`
         );
-        const memberStatus = hasJoinedResponse.data.hasJoined;
+        const memberStatus = isMemberResponse.data.isMember;
 
         if (memberStatus) {
           const ownerResponse = await axios.get(
-            `/api/is-owner/${roomCode}/${userId}`
+            `/communities/is-owner/${roomCode}/${userId}`
           );
           setIsOwner(ownerResponse.data.isOwner);
         }
 
         // Check room's privacy
         const roomPrivateResponse = await axios.get(
-          `/api/is-private/${roomCode}`
+          `/communities/is-private/${roomCode}`
         );
         const roomPrivacy = roomPrivateResponse.data.isPrivate;
         setIsRoomPrivate(roomPrivacy);
@@ -52,7 +52,7 @@ const Chatroom = () => {
           navigate("/communities/explore");
         } else if (!memberStatus && !roomPrivacy) {
           try {
-            await axios.post("/api/add-to-membership", {
+            await axios.post("/membership", {
               userId: userId,
               roomCode: roomCode,
             });
@@ -70,7 +70,7 @@ const Chatroom = () => {
   useEffect(() => {
     // Make an API call to check if the user is authenticated
     axios
-      .get("/api/ensure-auth", { withCredentials: true })
+      .get("/auth/ensure", { withCredentials: true })
       .then((response) => {
         memoizedHandleAuthentication(response.data.isAuthenticated);
       })
