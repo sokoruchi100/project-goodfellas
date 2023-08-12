@@ -1,6 +1,7 @@
 const { google } = require("googleapis");
 const { OAuth2Client } = require("google-auth-library");
 const path = require("path");
+const axios = require("axios");
 require("dotenv").config({
   path: path.resolve(__dirname, ".env"),
 });
@@ -10,9 +11,21 @@ const oAuthClient = new OAuth2Client({
   redirectUri: "http://localhost:5000/auth/google/callback",
 });
 
+
+// Users Channel Details
+let channelID = "";
+let videos = [];
+
+class Video {
+    constructor(title, description, thumbnail) {
+        this.title = title;
+        this.description = description;
+        this.thumbnail = thumbnail;
+    }
+}
+
 const fetchChannelDataAndVideoTitles = async (accessToken) => {
   oAuthClient.setCredentials({ access_token: accessToken });
-
   const youtube = google.youtube({
     version: "v3",
     auth: oAuthClient,
@@ -48,14 +61,43 @@ const fetchChannelDataAndVideoTitles = async (accessToken) => {
 
     // Fetch video titles using the YouTube API as described above
     const videoTitles = response.data.items.map((item) => item.snippet.title);
+    const videoDescriptions = response.data.items.map((item) => item.snippet.description);
 
     // You can add more logic here to handle the fetched data as per your requirements
-
+    // Updating our channel details
+    channelID = channelId;
+    if (response.data.items.length > 3)
+    {
+      for (let i = 0; i < 3; i++)
+      {
+        let vidTitle = response.data.items[i].snippet.title;
+        let vidDesc = response.data.items[i].snippet.description;
+        let vidTN = response.data.items[i].snippet.thumbnails.high.url;
+        let vid = new Video(vidTitle, vidDesc, vidTN);
+        videos.push(vid);
+      }
+    }
+    else if (response.data.items.length == 0){
+      // Do nothing if there are no videos
+    }
+    else
+    {
+      for (let i = 0; i < response.data.items.length; i++)
+      {
+        let vidTitle = response.data.items[i].snippet.title;
+        let vidDesc = response.data.items[i].snippet.description;
+        let vidTN = response.data.items[i].snippet.thumbnails.high.url;
+        let vid = new Video(vidTitle, vidDesc, vidTN);
+        videos.push(vid);
+      }
+    }
+    
     return {
       channelId: channelId,
       channelName: channelName,
       channelPicture: channelPicture,
       videoTitles: videoTitles,
+      videoDescriptions: videoDescriptions
     };
   } catch (error) {
     console.error(
@@ -66,6 +108,9 @@ const fetchChannelDataAndVideoTitles = async (accessToken) => {
   }
 };
 
+
+
 module.exports = {
   fetchChannelDataAndVideoTitles,
+  videos
 };

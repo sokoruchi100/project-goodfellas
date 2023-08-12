@@ -14,7 +14,7 @@ const SignUp = ({ isAuthenticated, handleAuthentication }) => {
       .catch((error) => {
         console.error("Error checking authentication:", error);
       });
-  }, [isAuthenticated]);
+  }, [isAuthenticated, handleAuthentication]);
 
   const handleGoogleLogin = () => {
     // Replace "http://localhost:5000/auth/google" with your backend API endpoint for Google OAuth
