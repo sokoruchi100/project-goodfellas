@@ -1,27 +1,24 @@
 const express = require("express");
 const router = express.Router();
-const passportSetup = require("../passport-setup"); // Import the passport setup file
-const authController = require("../controllers/authController");
+
+const {
+  authenticate,
+  handleGoogleCallback,
+  logout,
+  ensureAuthenticated,
+  authenticateCallback,
+} = require("../controllers/authController");
 
 // Endpoint to initiate the Google OAuth flow
-router.get(
-  "/google",
-  passportSetup.authenticate("google", {
-    scope: [
-      "profile",
-      "email",
-      "https://www.googleapis.com/auth/youtube.readonly",
-    ],
-  })
-);
+router.get("/google", authenticate);
 
-// Endpoint to handle the Google OAuth callback
-router.get(
-  "/google/callback",
-  passportSetup.authenticate("google", { failureRedirect: "/login-failed" }),
-  authController.handleGoogleCallback
-);
+//Endpoint to handle the Google OAuth callback
+router.get("/google/callback", authenticateCallback, handleGoogleCallback);
 
-router.get("/logout", authController.logout);
+//Logs user out of account
+router.post("/logout", logout);
+
+//checks whether the user is authenticated
+router.get("/ensure", ensureAuthenticated);
 
 module.exports = router;

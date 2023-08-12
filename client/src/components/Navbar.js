@@ -1,14 +1,16 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom"; // Assuming you are using React Router for navigation
 import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 
-const Navbar = ({ handleAuthentication }) => {
+const Navbar = () => {
+  const { handleAuthentication } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
     // Make an API call to logout
     axios
-      .get("/auth/logout", { withCredentials: true })
+      .post("/auth/logout", { withCredentials: true })
       .then(() => {
         // On successful logout, navigate to the landing page
         handleAuthentication(false);

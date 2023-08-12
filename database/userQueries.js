@@ -1,5 +1,3 @@
-// database/userQueries.js
-
 const con = require("./dbConnection"); // Import the MySQL connection
 
 function addUser(id, username, callback) {
@@ -17,10 +15,8 @@ function addUser(id, username, callback) {
 
   con.query(query, values, (error, result) => {
     if (error) {
-      console.log("Failed to add user", error);
       res.status(500).json({ error: "Failed to add user" });
     } else {
-      console.log("Added User", username);
       const userId = result.insertId;
       callback(userId);
     }
@@ -37,7 +33,6 @@ function addUserProfile(userId, profilePicture, displayName) {
       console.log("Failed to add userProfile", error);
       res.status(500).json({ error: "Failed to add userProfile" });
     } else {
-      console.log("Added UserProfile", displayName);
     }
   });
 }
@@ -61,8 +56,43 @@ function getUserIdByChannelId(channelId, callback) {
   });
 }
 
+// Helper function to get user ID by name
+function getUserIdByName(name) {
+  const query = "SELECT id FROM Users WHERE channelName = ?";
+  return new Promise((resolve, reject) => {
+    con.query(query, [name], (error, results) => {
+      if (error) {
+        reject(error);
+      } else if (results.length > 0) {
+        resolve(results[0].id); // Assuming 'id' is the column name for user IDs
+      } else {
+        resolve(null);
+      }
+    });
+  });
+}
+
+function getUserProfile(userId) {
+  const query =
+    "SELECT displayName, profilePicture FROM UserProfiles WHERE userId = ?";
+  return new Promise((resolve, reject) => {
+    con.query(query, [userId], (error, results) => {
+      if (error) {
+        reject(error);
+      } else if (results.length > 0) {
+        const userProfile = results[0];
+        resolve(userProfile);
+      } else {
+        resolve(null);
+      }
+    });
+  });
+}
+
 module.exports = {
   addUser,
   addUserProfile,
   getUserIdByChannelId,
+  getUserIdByName,
+  getUserProfile,
 };

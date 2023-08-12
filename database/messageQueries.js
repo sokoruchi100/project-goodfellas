@@ -16,9 +16,16 @@ async function loadAndSendMessages(communityId) {
     console.error("Invalid communityId:", communityId);
     return;
   }
-  console.log("COMMUNITY ID:" + communityId);
-  const query =
-    "SELECT senderId, content, timeStamp FROM Messages WHERE communityId = ?";
+  const query = `
+    SELECT 
+      up.displayName,
+      up.profilePicture,
+      m.content, 
+      m.timeStamp 
+    FROM Messages m
+    JOIN UserProfiles up
+      ON up.userId = m.senderId
+    WHERE communityId = ?`;
 
   return new Promise((resolve, reject) => {
     con.query(query, [communityId], (err, result) => {
@@ -28,10 +35,26 @@ async function loadAndSendMessages(communityId) {
         reject(err);
         return;
       }
-      console.log(result);
-      resolve(result);
+
+      const messages = result;
+      // Convert BLOB to string, only for urls
+      messages.forEach((row) => {
+        row.profilePicture = row.profilePicture.toString();
+      });
+
+      resolve(messages);
     });
   });
 }
 
-module.exports = { saveMessageToDatabase, loadAndSendMessages };
+async function deleteMessages(communityId) {
+  const query = "DELETE FROM Messages WHERE communityId = ?";
+  return new Promise((resolve, reject) => {
+    con.query(query, [communityId], (error, results) => {
+      if (error) reject(error);
+      else resolve();
+    });
+  });
+}
+
+module.exports = { saveMessageToDatabase, loadAndSendMessages, deleteMessages };

@@ -1,9 +1,9 @@
 import axios from "axios";
 
 export const getUserId = () => {
-  return axios.get("/api/user-id", { withCredentials: true });
+  return axios.get("/users/id", { withCredentials: true });
 };
 
 export const getCommunities = () => {
-  return axios.get("/api/communities");
+  return axios.get("/communities");
 };
