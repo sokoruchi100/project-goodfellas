@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import InspirationEngine from "./pages/InspirationEngine.js";
+import InspirationEngine from "./InspirationEngine.js";
 import Dashboard from "./pages/Dashboard.js";
 import Explore from "./pages/Explore";
 import Chatroom from "./pages/Chatroom";

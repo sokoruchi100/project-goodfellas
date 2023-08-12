@@ -6,15 +6,12 @@ const crypto = require("crypto");
 const sharedSession = require("express-socket.io-session");
 const cors = require("cors");
 const path = require("path");
-<<<<<<< HEAD
 const axios = require("axios");
 const { videos } = require("./youtube-api.js");
 require("dotenv").config({
   path: path.resolve(__dirname, ".env"),
 });
-=======
 const multer = require("multer");
->>>>>>> 66c74a6821f281370417fcba73e894db5853e600
 
 //Files
 const passportSetup = require("./passport-setup"); // Import the passport setup file
@@ -22,9 +19,6 @@ const initializeSocketServer = require("./socket-server");
 const con = require("./database/dbConnection");
 const authRoutes = require("./routes/authRoutes");
 const apiRoutes = require("./routes/apiRoutes");
-<<<<<<< HEAD
-=======
-const ieRoutes = require("./routes/ieRoutes");
 const tagRoutes = require("./routes/tagRoutes");
 const userRoutes = require("./routes/userRoutes");
 const communityRoutes = require("./routes/communityRoutes");
@@ -39,7 +33,6 @@ const storage = multer.diskStorage({
     cb(null, Date.now() + path.extname(file.originalname)); // Appends the original file extension
   },
 });
->>>>>>> 66c74a6821f281370417fcba73e894db5853e600
 
 const app = express();
 const server = http.createServer(app);
@@ -138,13 +131,11 @@ io.use(
   })
 );
 
-<<<<<<< HEAD
 // Your authRoutes
 app.use("/auth", authRoutes);
 
 // Your apiRoutes
 app.use("/api", apiRoutes);
-=======
 const upload = multer({ storage: storage });
 
 app.post("/upload", upload.single("image"), (req, res) => {
@@ -163,12 +154,10 @@ app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 //Route Middlewares
 app.use("/auth", authRoutes);
 app.use("/api", apiRoutes);
-app.use("/inspiration-engine", ieRoutes);
 app.use("/tags", tagRoutes);
 app.use("/users", userRoutes);
 app.use("/communities", communityRoutes);
 app.use("/membership", membershipRoutes);
->>>>>>> 66c74a6821f281370417fcba73e894db5853e600
 
 // Serve the output.css file with the correct MIME type
 app.get("/dist/output.css", (req, res) => {
