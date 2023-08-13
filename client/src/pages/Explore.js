@@ -165,7 +165,7 @@ const Explore = () => {
         <div className="flex flex-col w-10/12 h-full">
           {/*HEADER*/}
           <div className="h-1/4 pl-10 pt-10">
-            <h2 className="text-4xl font-normal">Explore Communities</h2>
+            <h2 className="text-4xl font-normal my-10">Explore Communities</h2>
             {/* Search Bar */}
             <SearchBar
               searchTags={searchTags}
@@ -176,7 +176,7 @@ const Explore = () => {
 
           {/*MAIN BODY CONTENT*/}
           <div className="h-3/4 bg-black p-10">
-            <div className="grid grid-cols-3 space-x-10">
+            <div className="grid grid-cols-3 space-x-10 h-full">
               {/* Render the filtered communities */}
               {Array.isArray(filteredCommunities) &&
                 filteredCommunities.map((community) => (

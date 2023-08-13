@@ -17,7 +17,7 @@ const SearchBar = ({ searchTags, setSearchTags, handleSearch }) => {
         className="bg-white rounded-lg w-full h-full border border-black pl-4 text-base placeholder:text-gray-600" // optional CSS class for styling
       />
       <button
-        className="p-0 absolute top-2 right-0 border-none bg-transparent cursor-pointer"
+        className="p-0 absolute top-2 right-2 border-none bg-transparent cursor-pointer"
         onClick={handleSearch}
       >
         <FontAwesomeIcon icon={faMagnifyingGlass} />

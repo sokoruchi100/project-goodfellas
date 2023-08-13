@@ -30,7 +30,7 @@ function TagBox({ tags, setTags }) {
             <span key={index} className="Tag">
               {tag}
               <button
-                className="border-none bg-none font-bold"
+                className="border-none bg-none font-normal bg-transparent"
                 onClick={(e) => deleteTag(e, index)}
               >
                 X
@@ -39,9 +39,9 @@ function TagBox({ tags, setTags }) {
           ))}
       </div>
       {tags && tags.length < 5 && (
-        <div>
+        <div className="h-1/3 flex flex-row items-center mt-1">
           <input
-            className="bg-yellow-200 text-black px-1 rounded-full w-2/5"
+            className="bg-yellow-200 text-base text-black px-1 rounded-full w-2/5 placeholder:text-black font-semibold"
             type="text"
             placeholder="Add a tag"
             onChange={(e) => handleCurrentTagChange(e)}

@@ -41,7 +41,7 @@
 
     button {
         font-family: 'Urbanist', sans-serif;
-        @apply font-semibold text-2xl py-2 px-4 border border-white rounded-lg bg-sky-700;
+        @apply font-semibold text-2xl py-2 px-4 border border-white rounded-lg bg-sky-700 cursor-pointer transition;
     }
 
     .Landing-Section {
@@ -58,11 +58,6 @@
 
     input {
         @apply outline-none border-white
-    }
-
-    .Title-Input {
-        @apply mb-4 p-2 bg-transparent border-b border-current placeholder-white text-white w-full text-2xl;
-        font-family: 'Urbanist', sans-serif;
     }
 
     select {

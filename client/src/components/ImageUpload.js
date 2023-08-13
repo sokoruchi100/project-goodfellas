@@ -32,7 +32,7 @@ function ImageUpload({ imageUrl, setImageUrl }) {
             className="h-32 w-32 border border-white rounded-full"
           />
         ) : (
-          <div className="h-32 w-32 bg-gray-800 border border-white rounded-full flex items-center justify-center">
+          <div className="h-32 w-32 bg-transparent border border-white rounded-full flex items-center justify-center">
             <span className="text-white text-6xl">+</span>
           </div>
         )}

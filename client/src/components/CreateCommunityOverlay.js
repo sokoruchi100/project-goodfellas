@@ -94,7 +94,7 @@ const CreateCommunityOverlay = ({
         <div className="absolute bg-gray-800 rounded-xl h-3/5 w-1/2 px-10 pt-20 pb-5">
           <div className="absolute top-1 right-1  ">
             <button
-              className="border-none text-white"
+              className="font-normal border-none text-white bg-transparent"
               onClick={handleShowCreateCommunityOverlay}
             >
               X
@@ -104,7 +104,7 @@ const CreateCommunityOverlay = ({
             <div className="flex flex-row justify-between mb-20 h-1/5">
               <div className="flex flex-col w-2/3">
                 <input
-                  className="Title-Input"
+                  className="mb-4 p-2 bg-transparent border-b border-current placeholder-white text-white w-full text-3xl font-urbanist"
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -121,7 +121,7 @@ const CreateCommunityOverlay = ({
 
             <div className="h-1/5 relative">
               <select
-                className="w-40 h-9 bg-transparent border rounded-sm border-white text-white bg-gray-800 pl-2 outline-none"
+                className="w-40 h-9 bg-transparent border rounded-md border-white text-white bg-gray-800 pl-2 outline-none"
                 value={isPublic ? "public" : "private"}
                 onChange={(e) => setIsPublic(e.target.value === "public")}
               >
@@ -136,16 +136,16 @@ const CreateCommunityOverlay = ({
 
             <div className="h-3/5 my-4 relative">
               <textarea
-                className="w-full h-full bg-gray-400 bg-opacity-50 border rounded-md p-3 placeholder-white outline-none text-white text-md resize-none"
+                className="w-full h-full bg-gray-400 bg-opacity-50 border rounded-md p-3 placeholder-white outline-none text-white text-base resize-none font-roboto"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Write a Description"
               ></textarea>
-              <div className="absolute opacity-50 inset-0 border border-white rounded-md pointer-events-none transform -translate-x-4 -translate-y-4"></div>
+              <div className="absolute opacity-50 inset-0 border border-white rounded-lg pointer-events-none transform -translate-x-4 -translate-y-4"></div>
             </div>
-            <div className="flex justify-end h-1/">
+            <div className="flex justify-end h-1/5">
               <button
-                className="text-white bg-sky-700 px-10"
+                className="text-white bg-sky-700 px-10 w-1/3 cursor-pointer hover:bg-yellow-200 hover:text-black transition"
                 onClick={(e) => handleCreateChatroom(e)}
               >
                 Submit
