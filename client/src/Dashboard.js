@@ -32,7 +32,7 @@ function Dashboard({ isAuthenticated, handleAuthentication }) {
     if (file) {
       // You can use FileReader to read the selected image and display it on the screen
       const reader = new FileReader();
-      reader.onloadend = () => {
+      reader.onloadend = async () => {
         setSelectedImage(reader.result);
       };
       reader.readAsDataURL(file);
