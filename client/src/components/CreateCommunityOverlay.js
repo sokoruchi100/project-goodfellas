@@ -90,7 +90,7 @@ const CreateCommunityOverlay = ({
 
   return (
     showCreateCommunityOverlay && (
-      <div className="fixed inset-0 flex justify-center items-center bg-opacity-50 bg-black">
+      <div className="fixed inset-0 flex justify-center items-center bg-opacity-50 bg-black z-10">
         <div className="absolute bg-gray-800 rounded-xl h-3/5 w-1/2 px-10 pt-20 pb-5">
           <div className="absolute top-1 right-1  ">
             <button

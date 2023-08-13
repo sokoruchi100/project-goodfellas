@@ -5,12 +5,12 @@ import Navbar from "../components/Navbar";
 import { useAuthentication } from "../hooks/useAuthentication";
 import { useAuth } from "../context/AuthContext";
 import UserContext from "../context/UserContext";
-import TagBox from "../components/TagBox";
 import Button from "../components/Button";
 import TopBar from "../components/TopBar";
-import { stringToArray } from "../utils/TagsUtil";
 import CommunityCard from "../components/CommunityCard";
 import CreateCommunityOverlay from "../components/CreateCommunityOverlay";
+import SearchBar from "../components/SearchBar";
+import { stringToArray } from "../utils/TagsUtil";
 
 const Explore = () => {
   const { userId } = useContext(UserContext);
@@ -75,13 +75,6 @@ const Explore = () => {
     [showPublicCommunities, userId]
   );
 
-  // Function to filter the communities based on public and private states
-  useEffect(() => {
-    filterIfPublicOrPrivate(allCommunities).then((results) => {
-      setFilteredCommunities(results);
-    });
-  }, [allCommunities, filterIfPublicOrPrivate]);
-
   const handleSearch = () => {
     let communities = [];
     if (searchTags === "") {
@@ -104,9 +97,12 @@ const Explore = () => {
     });
   };
 
-  const handleSearchTagsChange = (e) => {
-    setSearchTags(e.target.value);
-  };
+  // Function to filter the communities based on public and private states
+  useEffect(() => {
+    filterIfPublicOrPrivate(allCommunities).then((results) => {
+      setFilteredCommunities(results);
+    });
+  }, [allCommunities, filterIfPublicOrPrivate]);
 
   const handleCommunityDeletion = async (communityId) => {
     try {
@@ -127,7 +123,7 @@ const Explore = () => {
   };
 
   return (
-    <div>
+    <div className="h-screen">
       <TopBar />
       <CreateCommunityOverlay
         userId={userId}
@@ -135,42 +131,50 @@ const Explore = () => {
         showCreateCommunityOverlay={showCreateCommunityOverlay}
         setShowCreateCommunityOverlay={setShowCreateCommunityOverlay}
       ></CreateCommunityOverlay>
-      <div className="flex flex-row">
-        <Navbar
-          className="w-1/12"
-          handleAuthentication={handleAuthentication}
-        />
+      <Navbar className="w-1/12" handleAuthentication={handleAuthentication} />
 
-        <div className="flex flex-col h-full w-2/12">
-          <div className="mb-16">
-            <Button
-              text="Create Community"
+      <div className="ml-24 flex flex-row h-full">
+        {/*SIDE BAR*/}
+        <div className="flex items-center flex-col h-full w-2/12 bg-gray-900">
+          <div className="mb-16 flex justify-center w-5/6 mt-16">
+            <button
+              className="font-normal text-white h-12 w-full text-3xl p-0 rounded-xl"
               onClick={handleShowCreateCommunityOverlay}
-            ></Button>
+            >
+              + Create
+            </button>
           </div>
 
-          <div className="flex flex-col">
-            <Button
-              text="Explore"
+          <div className="flex flex-col w-5/6 justify-center">
+            <button
+              className="font-normal text-white bg-transparent mb-6"
               onClick={handleShowPublicCommunities}
-            ></Button>
-            <Button
+            >
+              Explore
+            </button>
+            <button
+              className="font-normal text-white bg-transparent"
               text="My Communities"
               onClick={handleShowPrivateCommunities}
-            ></Button>
+            >
+              My Communities
+            </button>
           </div>
         </div>
 
-        <div className="flex flex-col w-9/12 h-full">
-          <div className="h-1/4">
-            <h2>Explore Communities</h2>
-            <div>
-              {/* Search Bar */}
-              <TagBox value={searchTags} onChange={handleSearchTagsChange} />
-              <Button text="Search Tags" onClick={handleSearch} />
-            </div>
+        <div className="flex flex-col w-10/12 h-full">
+          {/*HEADER*/}
+          <div className="h-1/4 pl-10 pt-10">
+            <h2 className="text-4xl font-normal">Explore Communities</h2>
+            {/* Search Bar */}
+            <SearchBar
+              searchTags={searchTags}
+              setSearchTags={setSearchTags}
+              handleSearch={handleSearch}
+            />
           </div>
 
+          {/*MAIN BODY CONTENT*/}
           <div className="h-3/4 bg-black p-10">
             <div className="grid grid-cols-3 space-x-10">
               {/* Render the filtered communities */}

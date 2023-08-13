@@ -41,7 +41,7 @@
 
     button {
         font-family: 'Urbanist', sans-serif;
-        @apply font-semibold text-2xl py-2 px-4 border border-white rounded-lg;
+        @apply font-semibold text-2xl py-2 px-4 border border-white rounded-lg bg-sky-700;
     }
 
     .Landing-Section {
@@ -68,5 +68,17 @@
     select {
         @apply text-xl;
         font-family: 'Urbanist', sans-serif;
+    }
+
+    ul {
+        list-style-type: none;
+    }
+
+    li {
+        @apply my-10
+    }
+
+    a {
+        @apply text-white text-xl no-underline ;
     }
 }
