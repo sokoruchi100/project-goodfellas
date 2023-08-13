@@ -5,7 +5,6 @@ import Navbar from "../components/Navbar";
 import { useAuthentication } from "../hooks/useAuthentication";
 import { useAuth } from "../context/AuthContext";
 import UserContext from "../context/UserContext";
-import Button from "../components/Button";
 import TopBar from "../components/TopBar";
 import CommunityCard from "../components/CommunityCard";
 import CreateCommunityOverlay from "../components/CreateCommunityOverlay";
@@ -131,7 +130,7 @@ const Explore = () => {
         showCreateCommunityOverlay={showCreateCommunityOverlay}
         setShowCreateCommunityOverlay={setShowCreateCommunityOverlay}
       ></CreateCommunityOverlay>
-      <Navbar className="w-1/12" handleAuthentication={handleAuthentication} />
+      <Navbar />
 
       <div className="ml-24 flex flex-row h-full">
         {/*SIDE BAR*/}

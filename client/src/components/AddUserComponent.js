@@ -34,12 +34,18 @@ const AddUserComponent = () => {
   return (
     <div>
       <input
+        className="bg-transparent border-b-2 border-gray-500 text-white font-normal px-1 py-0 text-lg w-2/3 mr-2"
         type="text"
         value={userName}
-        placeholder="Search for a user"
+        placeholder="Add a member"
         onChange={(e) => setUserName(e.target.value)}
       />
-      <button onClick={handleAddMember}>Add User to Community</button>
+      <button
+        className="text-white bg-transparent font-normal px-1 py-0  text-lg"
+        onClick={handleAddMember}
+      >
+        Add
+      </button>
       <p>{message}</p>
     </div>
   );

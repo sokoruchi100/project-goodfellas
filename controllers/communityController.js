@@ -7,6 +7,7 @@ const {
   deleteCommunityProfile,
   checkIfUserIsOwner,
   checkIfCommunityIsPrivate,
+  getCommunityNameByRoomCode,
 } = require("../database/communityQueries");
 const {
   addMemberWithCommunityId,
@@ -98,6 +99,16 @@ const createCommunity = async ({ body }, res) => {
   }
 };
 
+const getCommunityName = async (req, res) => {
+  const { roomCode } = req.params;
+  try {
+    const communityName = await getCommunityNameByRoomCode(roomCode);
+    res.status(200).json({ communityName });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to get community name" });
+  }
+};
+
 const isPrivate = async (req, res) => {
   const { roomCode } = req.params;
 
@@ -133,4 +144,5 @@ module.exports = {
   isPrivate,
   isOwner,
   communityDeletion,
+  getCommunityName,
 };

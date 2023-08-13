@@ -25,7 +25,7 @@ const TopBar = () => {
   };
 
   return (
-    <div className="top-bar right-0 absolute flex flex-row">
+    <div className="z-10 top-bar right-0 absolute flex flex-row p-4">
       <button onClick={handleLogout}>Log out</button>
       {user.profilePicture && (
         <img
