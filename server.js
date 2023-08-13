@@ -6,17 +6,19 @@ const crypto = require("crypto");
 const sharedSession = require("express-socket.io-session");
 const cors = require("cors");
 const path = require("path");
+const axios = require("axios");
+const { videos } = require("./youtube-api.js");
+require("dotenv").config({
+  path: path.resolve(__dirname, ".env"),
+});
 const multer = require("multer");
 
 //Files
 const passportSetup = require("./passport-setup"); // Import the passport setup file
 const initializeSocketServer = require("./socket-server");
 const con = require("./database/dbConnection");
-
-//Routes
 const authRoutes = require("./routes/authRoutes");
 const apiRoutes = require("./routes/apiRoutes");
-const ieRoutes = require("./routes/ieRoutes");
 const tagRoutes = require("./routes/tagRoutes");
 const userRoutes = require("./routes/userRoutes");
 const communityRoutes = require("./routes/communityRoutes");
@@ -37,6 +39,77 @@ const server = http.createServer(app);
 const io = initializeSocketServer(server);
 const port = process.env.PORT || 5000;
 
+//Youtube api stuff
+const YOUTUBE_API_KEY = process.env.GOOGLE_CLIENT_API_KEY;
+const BASE_URL = 'https://www.googleapis.com/youtube/v3/videos';
+
+//Open ai API stuff
+const { Configuration, OpenAIApi } = require("openai");
+require("dotenv").config();
+
+const configuration = new Configuration({
+    apiKey: process.env.OPENAI_API_KEY,
+});
+const openai = new OpenAIApi(configuration);
+
+//////////OPEN AI FUNCTIONS/////////////////////////////////////////
+
+// Summarize description
+const descriptionSummarize = async (desc) => {
+  const prompt = `Summarize the following description of a youtube video within two sentences: ${desc}`;
+  if (desc.length > 30){
+    try {
+      const completion = await openai.createCompletion({
+        model: "text-davinci-003",
+        prompt: prompt,
+        temperature: 0.7
+      });
+
+      const completion_text = completion.data.choices[0];
+      
+      return completion_text;
+    } catch (error) {
+      if (error.response) {
+        console.log(error.response.status);
+        console.log(error.response.data);
+      } else {
+        console.log(error.message);
+      }
+    }
+  }
+  else{
+    return desc;
+  }
+}
+
+
+const getInspired = async (inputedVideo, userTitles, userDescriptions) => {
+
+  const prompt = `Here is a list of information about my previous videos: { titles: ${userTitles} }. Here is information about a video that I would like to draw inspiration from: { titles: ${inputedVideo.title} }. Using the stated information, generate an attractive title and a well thought out video idea in a paragraph`;
+  console.log("Prompt: ", prompt);
+  try {
+      const completion = await openai.createCompletion({
+        model: "text-davinci-003",
+        prompt: prompt,
+        temperature: 0.7,
+        max_tokens: 400
+      });
+
+      const completion_text = completion.data.choices[0];
+      
+      return completion_text;
+    } catch (error) {
+      if (error.response) {
+        console.log(error.response.status);
+        console.log(error.response.data);
+      } else {
+        console.log(error.message);
+      }
+    }
+}
+
+////////////////////////////////////////////////////////////////////
+
 // Generate a session secret and reuse it for all sessions
 const sessionSecret = crypto.randomBytes(32).toString("hex");
 
@@ -48,8 +121,6 @@ const sessionMiddleware = session({
 });
 
 app.use(cors());
-app.use(express.json());
-
 // Initialize passport
 app.use(sessionMiddleware);
 app.use(passportSetup.initialize());
@@ -60,6 +131,11 @@ io.use(
   })
 );
 
+// Your authRoutes
+app.use("/auth", authRoutes);
+
+// Your apiRoutes
+app.use("/api", apiRoutes);
 const upload = multer({ storage: storage });
 
 app.post("/upload", upload.single("image"), (req, res) => {
@@ -78,7 +154,6 @@ app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 //Route Middlewares
 app.use("/auth", authRoutes);
 app.use("/api", apiRoutes);
-app.use("/inspiration-engine", ieRoutes);
 app.use("/tags", tagRoutes);
 app.use("/users", userRoutes);
 app.use("/communities", communityRoutes);
@@ -115,6 +190,83 @@ process.on("SIGINT", () => {
     process.exit(0);
   });
 });
+
+
+// Inspiration Engine
+// Desired input: titles, descriptions, and keywords from the following:
+//    -users previous videos(cap of 10), inputed videos, and trending videos within the niche
+// Ideal ouput: Title, Idea Summary, Keywords, and Similar Videos
+
+//app.use("/inspirationengine", ieRoutes);
+
+// This allows us to destructure req.body
+app.use(express.json());
+
+app.get('/my-video-details', async (req, res) => {
+  try {
+    res.json(videos);
+  }
+  catch (error) {
+    console.error('Error fetching user video details: ', error);
+    res.status(500).send('Failed to fetch user video details')
+  }
+});
+
+app.get('/videoDetails', async (req, res) => {
+  const videoId = req.query.videoId;
+  try {
+      const response = await axios.get(BASE_URL, {
+          params: {
+              part: 'snippet',
+              id: videoId,
+              key: YOUTUBE_API_KEY
+          }
+      });
+      const videoDetails = response.data.items[0].snippet;
+      res.json(videoDetails);
+  } catch (error) {
+      console.error('Error fetching video details:', error);
+      res.status(500).send('Failed to fetch video details');
+  }
+});
+
+app.post('/gpt-api-call', async (req, res) => {
+  const { vidDetails, myVidDetails } = req.body;
+
+  try {
+    //console.log(req.body);
+    //console.log(myVidDetails.description);
+
+    // Get user vid titles and descritpions in an array
+    const userTitles = [];
+    const userDescriptions = [];
+    for (let i = 0; i < myVidDetails.length; i++)
+    {
+      userTitles.push(myVidDetails[i].title);
+      let newDesc = await descriptionSummarize(myVidDetails[i].description);
+      userDescriptions.push(newDesc.text);
+    }
+    // Summarize description of inputted video
+    //vidDetails.description = await descriptionSummarize(vidDetails.description).text;
+    console.log("descriptions: ", userDescriptions, "\nalso\n", vidDetails.description);
+    const output = await getInspired(vidDetails, userTitles, userDescriptions);
+    console.log("Output:", output.text);
+    res.json(output.text);
+  }
+  catch (error) {
+
+  }
+})
+
+let video = {
+  title: "",
+  description: "",
+  keywords: []
+}
+
+
+
+
 
 server.listen(port, () => {
   console.log(`HTTP server is running on port ${port}`);
