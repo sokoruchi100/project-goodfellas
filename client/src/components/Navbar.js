@@ -1,37 +1,21 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom"; // Assuming you are using React Router for navigation
-import axios from "axios";
-import { useAuth } from "../context/AuthContext";
+import { Link } from "react-router-dom"; // Assuming you are using React Router for navigation
 
 const Navbar = () => {
-  const { handleAuthentication } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    // Make an API call to logout
-    axios
-      .post("/auth/logout", { withCredentials: true })
-      .then(() => {
-        // On successful logout, navigate to the landing page
-        handleAuthentication(false);
-        navigate("/"); // Redirect to the landing page
-      })
-      .catch((error) => {
-        console.error("Error during logout:", error);
-      });
-  };
-
   return (
     <nav>
-      <ul>
+      <Link to="/dashboard" className="absolute">
+        LOGO
+      </Link>
+      <ul className="flex flex-col h-full justify-center">
         <li>
           <Link to="/dashboard">Dashboard</Link>
         </li>
         <li>
-          <Link to="/communities/explore">Communities</Link>
+          <Link to="/inspirationengine">Inspiration Engine</Link>
         </li>
         <li>
-          <button onClick={handleLogout}>Log out</button>
+          <Link to="/communities/explore">Communities</Link>
         </li>
       </ul>
     </nav>

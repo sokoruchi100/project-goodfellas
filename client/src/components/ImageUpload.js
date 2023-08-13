@@ -23,10 +23,21 @@ function ImageUpload({ imageUrl, setImageUrl }) {
   };
 
   return (
-    <div>
-      {/* Handle the form submission here */}
-      <input type="file" onChange={handleUpload} />
-      {imageUrl && <img src={imageUrl} alt="Uploaded preview" />}
+    <div className="relative">
+      <label className="cursor-pointer">
+        {imageUrl ? (
+          <img
+            src={imageUrl}
+            alt="Uploaded preview"
+            className="h-32 w-32 border border-white rounded-full"
+          />
+        ) : (
+          <div className="h-32 w-32 bg-gray-800 border border-white rounded-full flex items-center justify-center">
+            <span className="text-white text-6xl">+</span>
+          </div>
+        )}
+        <input type="file" className="hidden" onChange={handleUpload} />
+      </label>
     </div>
   );
 }
