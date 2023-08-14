@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Link, Navigate } from "react-router-dom"; // Import Link and Redirect from react-router-dom
 import axios from "axios"; // Import axios
 import { useAuth } from "../context/AuthContext";
+import InfoTabs from "../components/InfoTabs";
 
 const Landing = () => {
   const { isAuthenticated, handleAuthentication } = useAuth();
@@ -20,6 +21,8 @@ const Landing = () => {
 
   return (
     <div>
+      {/* Redirect to Dashboard if authenticated */}
+      {isAuthenticated && <Navigate to="/dashboard" />}
       <div className="bg-black Landing-Section flex flex-row">
         <div className="w-full h-full relative">
           <div className="Logo">
@@ -48,24 +51,17 @@ const Landing = () => {
             src="https://images.unsplash.com/photo-1605089103010-bcba7ca9b10d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1160&q=80"
           ></img>
         </div>
-
-        {/* Redirect to Dashboard if authenticated */}
-        {isAuthenticated && <Navigate to="/dashboard" />}
       </div>
-      <div className="bg-sky-700 w-full Landing-Section">
-        <h2 className="text-center">Inspiration Engine</h2>
-        <p className="text-center">
+
+      <div className="bg-sky-700 w-full Landing-Section flex flex-col items-center">
+        <h2 className="mt-20 text-center">Inspiration Engine</h2>
+        <p className="mt-4 text-center w-1/3">
           Leverage the power of artificial intelligence to create unique ideas
           personalized for your content.
         </p>
-        <div className="bg-gray-700">
-          <p className="w-72">
-            Input 4 of your own videos for the artificial intelligence to
-            analyze. All new ideas are personalized around your content, making
-            sure that each idea is still grounded within your content.
-          </p>
-        </div>
+        <InfoTabs></InfoTabs>
       </div>
+
       <div className="bg-sky-700 w-full Landing-Section flex">
         <div className="w-2/5">
           <div className="bg-gray-700">01</div>
