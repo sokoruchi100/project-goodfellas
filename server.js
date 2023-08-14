@@ -41,14 +41,14 @@ const port = process.env.PORT || 5000;
 
 //Youtube api stuff
 const YOUTUBE_API_KEY = process.env.GOOGLE_CLIENT_API_KEY;
-const BASE_URL = 'https://www.googleapis.com/youtube/v3/videos';
+const BASE_URL = "https://www.googleapis.com/youtube/v3/videos";
 
 //Open ai API stuff
 const { Configuration, OpenAIApi } = require("openai");
 require("dotenv").config();
 
 const configuration = new Configuration({
-    apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
 
@@ -57,16 +57,16 @@ const openai = new OpenAIApi(configuration);
 // Summarize description
 const descriptionSummarize = async (desc) => {
   const prompt = `Summarize the following description of a youtube video within two sentences: ${desc}`;
-  if (desc.length > 30){
+  if (desc.length > 30) {
     try {
       const completion = await openai.createCompletion({
         model: "text-davinci-003",
         prompt: prompt,
-        temperature: 0.7
+        temperature: 0.7,
       });
 
       const completion_text = completion.data.choices[0];
-      
+
       return completion_text;
     } catch (error) {
       if (error.response) {
@@ -76,37 +76,34 @@ const descriptionSummarize = async (desc) => {
         console.log(error.message);
       }
     }
-  }
-  else{
+  } else {
     return desc;
   }
-}
-
+};
 
 const getInspired = async (inputedVideo, userTitles, userDescriptions) => {
-
   const prompt = `Here is a list of information about my previous videos: { titles: ${userTitles} }. Here is information about a video that I would like to draw inspiration from: { titles: ${inputedVideo.title} }. Using the stated information, generate an attractive title and a well thought out video idea in a paragraph`;
   console.log("Prompt: ", prompt);
   try {
-      const completion = await openai.createCompletion({
-        model: "text-davinci-003",
-        prompt: prompt,
-        temperature: 0.7,
-        max_tokens: 400
-      });
+    const completion = await openai.createCompletion({
+      model: "text-davinci-003",
+      prompt: prompt,
+      temperature: 0.7,
+      max_tokens: 400,
+    });
 
-      const completion_text = completion.data.choices[0];
-      
-      return completion_text;
-    } catch (error) {
-      if (error.response) {
-        console.log(error.response.status);
-        console.log(error.response.data);
-      } else {
-        console.log(error.message);
-      }
+    const completion_text = completion.data.choices[0];
+
+    return completion_text;
+  } catch (error) {
+    if (error.response) {
+      console.log(error.response.status);
+      console.log(error.response.data);
+    } else {
+      console.log(error.message);
     }
-}
+  }
+};
 
 ////////////////////////////////////////////////////////////////////
 
@@ -121,6 +118,7 @@ const sessionMiddleware = session({
 });
 
 app.use(cors());
+app.use(express.json());
 // Initialize passport
 app.use(sessionMiddleware);
 app.use(passportSetup.initialize());
@@ -191,7 +189,6 @@ process.on("SIGINT", () => {
   });
 });
 
-
 // Inspiration Engine
 // Desired input: titles, descriptions, and keywords from the following:
 //    -users previous videos(cap of 10), inputed videos, and trending videos within the niche
@@ -202,35 +199,34 @@ process.on("SIGINT", () => {
 // This allows us to destructure req.body
 app.use(express.json());
 
-app.get('/my-video-details', async (req, res) => {
+app.get("/my-video-details", async (req, res) => {
   try {
     res.json(videos);
-  }
-  catch (error) {
-    console.error('Error fetching user video details: ', error);
-    res.status(500).send('Failed to fetch user video details')
+  } catch (error) {
+    console.error("Error fetching user video details: ", error);
+    res.status(500).send("Failed to fetch user video details");
   }
 });
 
-app.get('/videoDetails', async (req, res) => {
+app.get("/videoDetails", async (req, res) => {
   const videoId = req.query.videoId;
   try {
-      const response = await axios.get(BASE_URL, {
-          params: {
-              part: 'snippet',
-              id: videoId,
-              key: YOUTUBE_API_KEY
-          }
-      });
-      const videoDetails = response.data.items[0].snippet;
-      res.json(videoDetails);
+    const response = await axios.get(BASE_URL, {
+      params: {
+        part: "snippet",
+        id: videoId,
+        key: YOUTUBE_API_KEY,
+      },
+    });
+    const videoDetails = response.data.items[0].snippet;
+    res.json(videoDetails);
   } catch (error) {
-      console.error('Error fetching video details:', error);
-      res.status(500).send('Failed to fetch video details');
+    console.error("Error fetching video details:", error);
+    res.status(500).send("Failed to fetch video details");
   }
 });
 
-app.post('/gpt-api-call', async (req, res) => {
+app.post("/gpt-api-call", async (req, res) => {
   const { vidDetails, myVidDetails } = req.body;
 
   try {
@@ -240,33 +236,30 @@ app.post('/gpt-api-call', async (req, res) => {
     // Get user vid titles and descritpions in an array
     const userTitles = [];
     const userDescriptions = [];
-    for (let i = 0; i < myVidDetails.length; i++)
-    {
+    for (let i = 0; i < myVidDetails.length; i++) {
       userTitles.push(myVidDetails[i].title);
       let newDesc = await descriptionSummarize(myVidDetails[i].description);
       userDescriptions.push(newDesc.text);
     }
     // Summarize description of inputted video
     //vidDetails.description = await descriptionSummarize(vidDetails.description).text;
-    console.log("descriptions: ", userDescriptions, "\nalso\n", vidDetails.description);
+    console.log(
+      "descriptions: ",
+      userDescriptions,
+      "\nalso\n",
+      vidDetails.description
+    );
     const output = await getInspired(vidDetails, userTitles, userDescriptions);
     console.log("Output:", output.text);
     res.json(output.text);
-  }
-  catch (error) {
-
-  }
-})
+  } catch (error) {}
+});
 
 let video = {
   title: "",
   description: "",
-  keywords: []
-}
-
-
-
-
+  keywords: [],
+};
 
 server.listen(port, () => {
   console.log(`HTTP server is running on port ${port}`);

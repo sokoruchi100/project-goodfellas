@@ -6,6 +6,8 @@ const {
 const addMember = async (req, res) => {
   console.log("ADDING MEMBER TO COMMUNITY");
   const { userId, roomCode } = req.body;
+  console.log("USERID", userId);
+  console.log("ROOMCODE", roomCode);
   try {
     const isAlreadyMember = await checkIfUserIsMember(roomCode, userId);
     if (isAlreadyMember) {

@@ -79,6 +79,21 @@ function getCommunityIdByRoomCode(roomCode) {
   });
 }
 
+function getCommunityNameByRoomCode(roomCode) {
+  const query =
+    "SELECT cp.communityName FROM CommunityProfiles cp JOIN Communities c ON c.id = cp.communityId WHERE c.roomCode = ?";
+  return new Promise((resolve, reject) => {
+    con.query(query, [roomCode], (error, result) => {
+      if (error) {
+        console.error("Error getting community id:", error.message);
+        reject(error); // Reject the promise with the error
+      } else {
+        resolve(result[0]?.communityName); // Resolve the promise with the ID or undefined if the result is empty
+      }
+    });
+  });
+}
+
 async function checkIfCommunityIsPrivate(roomCode) {
   const query = `
       SELECT cp.isPublic
@@ -138,4 +153,5 @@ module.exports = {
   checkIfUserIsOwner,
   deleteCommunity,
   deleteCommunityProfile,
+  getCommunityNameByRoomCode,
 };

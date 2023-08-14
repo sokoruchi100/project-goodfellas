@@ -1,37 +1,42 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom"; // Assuming you are using React Router for navigation
-import axios from "axios";
-import { useAuth } from "../context/AuthContext";
+import { Link } from "react-router-dom"; // Assuming you are using React Router for navigation
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBorderAll,
+  faLightbulb,
+  faComments,
+} from "@fortawesome/free-solid-svg-icons";
 
 const Navbar = () => {
-  const { handleAuthentication } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    // Make an API call to logout
-    axios
-      .post("/auth/logout", { withCredentials: true })
-      .then(() => {
-        // On successful logout, navigate to the landing page
-        handleAuthentication(false);
-        navigate("/"); // Redirect to the landing page
-      })
-      .catch((error) => {
-        console.error("Error during logout:", error);
-      });
-  };
-
   return (
-    <nav>
-      <ul>
-        <li>
-          <Link to="/dashboard">Dashboard</Link>
+    <nav className="top-0 left-0 h-full w-24 bg-black fixed">
+      <Link to="/dashboard" className="absolute">
+        LOGO
+      </Link>
+      <ul className="flex flex-col h-full justify-center p-0">
+        <li className="flex justify-center">
+          <Link to="/dashboard">
+            <FontAwesomeIcon
+              className="w-12 h-12 text-sky-700"
+              icon={faBorderAll}
+            />
+          </Link>
         </li>
-        <li>
-          <Link to="/communities/explore">Communities</Link>
+        <li className="flex justify-center">
+          <Link to="/inspirationengine">
+            <FontAwesomeIcon
+              className="w-12 h-12 text-sky-700"
+              icon={faLightbulb}
+            />
+          </Link>
         </li>
-        <li>
-          <button onClick={handleLogout}>Log out</button>
+        <li className="flex justify-center">
+          <Link to="/communities/explore">
+            <FontAwesomeIcon
+              className="w-12 h-12 text-sky-700"
+              icon={faComments}
+            />
+          </Link>
         </li>
       </ul>
     </nav>

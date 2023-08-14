@@ -8,6 +8,7 @@ const {
   isPrivate,
   isOwner,
   communityDeletion,
+  getCommunityName,
 } = require("../controllers/communityController");
 
 //Get All Communities
@@ -15,6 +16,8 @@ router.get("/", ensureAuthenticated, fetchCommunitiesWithProfilesAndTags);
 
 // Create new Community
 router.post("/", createCommunity);
+
+router.get("/name/:roomCode", getCommunityName);
 
 //Check Community Privacy
 router.get("/is-private/:roomCode", isPrivate);

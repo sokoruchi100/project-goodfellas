@@ -7,6 +7,7 @@ import AddUserComponent from "../components/AddUserComponent";
 import { useAuth } from "../context/AuthContext";
 import UserContext from "../context/UserContext";
 import TopBar from "../components/TopBar";
+import MessagesList from "../components/MessagesList";
 
 const Chatroom = () => {
   const { userId, displayName, profilePicture } = useContext(UserContext);
@@ -16,7 +17,7 @@ const Chatroom = () => {
 
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  const [usersInRoom, setUsersInRoom] = useState([]);
+  const [communityName, setCommunityName] = useState("");
   const [isOwner, setIsOwner] = useState(false);
   const [isRoomPrivate, setIsRoomPrivate] = useState(false);
 
@@ -28,6 +29,13 @@ const Chatroom = () => {
     //WE ESCAPED CALLBACK HELL!!!
     const fetchUserDataAndRoomInfo = async () => {
       try {
+        //Get Community Name
+        const communityNameResponse = await axios.get(
+          `/communities/name/${roomCode}`
+        );
+        console.log(communityNameResponse.data.communityName);
+        setCommunityName(communityNameResponse.data.communityName);
+
         // Check membership
         const isMemberResponse = await axios.get(
           `/membership/is-member/${roomCode}/${userId}`
@@ -100,10 +108,6 @@ const Chatroom = () => {
       setMessages(messages);
     });
 
-    socket.on("users-in-room", (users) => {
-      setUsersInRoom(users);
-    });
-
     // Scroll to the bottom whenever messages update
     scrollToBottom();
 
@@ -152,42 +156,39 @@ const Chatroom = () => {
   };
 
   return (
-    <div>
+    <div className="h-screen">
       <TopBar />
-      <Navbar handleAuthentication={handleAuthentication} />
-      <div className="chatroom">
-        <h1>Chatroom {roomCode}</h1>
-        <div className="users">
-          {usersInRoom.map((user) => (
-            <span key={user.id}>{user.name}</span>
-          ))}
+      <Navbar />
+
+      <div className="chatroom ml-24 flex flex-row h-full">
+        <div className="bg-gray-800 h-full w-2/12 p-4">
+          {communityName && <h2 className="text-3xl mb-10">{communityName}</h2>}
+          {isOwner && isRoomPrivate && <AddUserComponent></AddUserComponent>}
         </div>
-        {console.log("Is Owner:", isOwner)}
-        {console.log("Is Room Private:", isRoomPrivate)}
-        {isOwner && isRoomPrivate && <AddUserComponent></AddUserComponent>}
-        {messages &&
-          messages.map((message, index) => (
-            <div key={index} className={`message`}>
-              <span>{message.displayName}</span>
-              {message.profilePicture && (
-                <img src={message.profilePicture} alt="User Profile" />
-              )}
-              {message.content}
-              {message.timeStamp.toLocaleString()}
-            </div>
-          ))}
+
+        <div className="w-10/12 relative h-full">
+          {messages && <MessagesList messages={messages}></MessagesList>}
+          <form
+            onSubmit={handleSendMessage}
+            className="w-full absolute bottom-12 px-6"
+          >
+            <input
+              type="text"
+              value={newMessage}
+              onChange={handleInputChange}
+              placeholder="Send a message"
+              className="w-full h-1/6 py-4 px-3 rounded-xl text-lg font-semibold"
+            />
+            <button
+              type="submit"
+              className="absolute right-4 border-none top-1"
+            >
+              Send
+            </button>
+          </form>
+        </div>
       </div>
-      <div className="input-container">
-        <form onSubmit={handleSendMessage}>
-          <input
-            type="text"
-            value={newMessage}
-            onChange={handleInputChange}
-            placeholder="Type your message..."
-          />
-          <button type="submit">Send</button>
-        </form>
-      </div>
+
       {!isAuthenticated && <Navigate to="/" />}
     </div>
   );
