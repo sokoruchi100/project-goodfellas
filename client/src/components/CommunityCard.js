@@ -34,7 +34,7 @@ function CommunityCard({ community, handleCommunityDeletion, userId }) {
         <div className="relative">
           {community.creatorId === userId && (
             <button
-              className="absolute bottom-0 right-0 z-10 text-sm bg-red-700 px-2 py-1"
+              className="absolute bottom-0 right-0 z-5 text-sm bg-red-700 px-2 py-1"
               onClick={() => handleCommunityDeletion(community.id)}
             >
               Delete
