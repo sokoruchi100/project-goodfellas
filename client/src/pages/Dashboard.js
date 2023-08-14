@@ -5,14 +5,13 @@ import axios from "axios";
 import UserContext from "../context/UserContext";
 import { useAuth } from "../context/AuthContext";
 import TagBox from "../components/TagBox";
-import Button from "../components/Button";
-import { arrayToString, postTags, getTags } from "../utils/TagsUtil";
+import { getTags } from "../utils/TagsUtil";
 import TopBar from "../components/TopBar";
 
 function Dashboard() {
   const { isAuthenticated, handleAuthentication } = useAuth();
   const { userId } = useContext(UserContext);
-  const [tags, setTags] = useState("");
+  const [tags, setTags] = useState([]);
 
   useEffect(() => {
     if (userId) {
@@ -21,8 +20,7 @@ function Dashboard() {
       // Fetching the tags for the user upon component load
       getTags(userId)
         .then((tagsArray) => {
-          const tagsString = arrayToString(tagsArray);
-          setTags(tagsString);
+          setTags(tagsArray);
         })
         .catch((error) => {
           console.error("Error fetching tags for user:", error);
@@ -42,26 +40,29 @@ function Dashboard() {
       });
   }, [isAuthenticated, handleAuthentication]);
 
-  const handleTagsChange = (e) => {
-    setTags(e.target.value);
-  };
-
   const handleSubmitTags = () => {
-    postTags(userId, tags)
-      .then((response) => {
-        console.log("Tags successfully updated:", response.data);
-      })
-      .catch((error) => {
-        console.error("Error updating tags:", error);
-      });
+    try {
+      axios.post(`/tags/userTags/${userId}`, { tags: tags });
+      console.log("Tags successfully updated");
+    } catch (error) {
+      console.error("Error updating tags:", error);
+    }
   };
 
   return (
     <div>
       <TopBar />
       <Navbar handleAuthentication={handleAuthentication} />
-      <TagBox value={tags} onChange={handleTagsChange} />
-      <Button text="Submit Tags" onClick={handleSubmitTags} />
+      <div className="ml-24 p-4">
+        <TagBox tags={tags} setTags={setTags} amount={10} />
+        <button
+          className="mt-4 px-2 py-1 text-white text-xl"
+          onClick={handleSubmitTags}
+        >
+          Submit Tags
+        </button>
+      </div>
+
       {!isAuthenticated && <Navigate to="/" />}
     </div>
   );

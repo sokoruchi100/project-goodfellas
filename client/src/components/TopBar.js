@@ -25,8 +25,13 @@ const TopBar = () => {
   };
 
   return (
-    <div className="z-10 top-bar right-0 absolute flex flex-row p-4">
-      <button onClick={handleLogout}>Log out</button>
+    <div className="z-10 top-bar right-0 absolute flex flex-row pt-4 pr-8">
+      <button
+        className="mr-4 px-2 py-1 self-center text-white text-xl"
+        onClick={handleLogout}
+      >
+        Log out
+      </button>
       {user.profilePicture && (
         <img
           src={user.profilePicture}

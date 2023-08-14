@@ -1,4 +1,5 @@
 const con = require("./dbConnection"); // Import the MySQL connection
+const { getCommunityIdByRoomCode } = require("./communityQueries");
 
 async function checkIfUserIsMember(roomCode, userId) {
   const query = `

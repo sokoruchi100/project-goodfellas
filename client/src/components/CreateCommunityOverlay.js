@@ -110,7 +110,12 @@ const CreateCommunityOverlay = ({
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Community Name"
                 />
-                <TagBox className="w-full" tags={tags} setTags={setTags} />
+                <TagBox
+                  className="w-full"
+                  tags={tags}
+                  setTags={setTags}
+                  amount={5}
+                />
               </div>
               <ImageUpload
                 className="w-1/3 flex "

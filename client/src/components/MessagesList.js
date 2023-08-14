@@ -6,7 +6,7 @@ function MessagesList({ messages }) {
       {messages &&
         messages.map((message, index) => (
           <div key={index} className="message flex flex-row p-4">
-            <div>
+            <div className="flex-shrink-0">
               {message.profilePicture && (
                 <img
                   src={message.profilePicture}

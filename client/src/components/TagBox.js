@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 
-function TagBox({ tags, setTags }) {
+function TagBox({ tags, setTags, amount }) {
   const [currentTag, setCurrentTag] = useState("");
 
   const addTag = (e) => {
     e.preventDefault();
-    const newTag = currentTag;
-    if (newTag && tags.length < 10) {
+    const newTag = currentTag.toLowerCase().replace(/\s/g, "");
+    if (newTag && tags.length < amount) {
       setTags([...tags, newTag]);
     }
   };
@@ -38,19 +38,19 @@ function TagBox({ tags, setTags }) {
             </span>
           ))}
       </div>
-      {tags && tags.length < 5 && (
-        <div className="h-1/3 flex flex-row items-center mt-1">
+      {tags && tags.length < amount && (
+        <div className="relative h-1/3 flex flex-row items-center mt-1 w-64">
           <input
-            className="bg-yellow-200 text-base text-black px-1 rounded-full w-2/5 placeholder:text-black font-semibold"
+            className="w-full bg-yellow-200 text-base text-black px-1 rounded-full placeholder:text-black font-semibold"
             type="text"
             placeholder="Add a tag"
             onChange={(e) => handleCurrentTagChange(e)}
           />
           <button
-            className="ml-1 text-base bg-sky-700 px-3 py-0 text-white"
+            className="absolute right-2 text-2xl border-none bg-transparent p-0 text-black"
             onClick={addTag}
           >
-            Enter
+            +
           </button>
         </div>
       )}
