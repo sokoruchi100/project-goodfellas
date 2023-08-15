@@ -8,7 +8,7 @@
 @layer base {
     
     html {
-        @apply bg-gray-700;
+        @apply bg-[#2F2F2F];
         font-family: 'Roboto', sans-serif;
     }
 

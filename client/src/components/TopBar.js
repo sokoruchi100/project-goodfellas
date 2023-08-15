@@ -25,7 +25,7 @@ const TopBar = () => {
   };
 
   return (
-    <div className="z-10 top-bar right-0 absolute flex flex-row pt-4 pr-8">
+    <div className="top-bar right-0 fixed flex flex-row pt-4 pr-8">
       <button
         className="mr-4 px-2 py-1 self-center text-white text-xl"
         onClick={handleLogout}
