@@ -24,9 +24,21 @@ const SignUp = () => {
   };
 
   return (
-    <div>
-      <h1>Click the Google Login Button Below to login</h1>
-      <GoogleLoginButton onClick={handleGoogleLogin}></GoogleLoginButton>
+    <div className="bg-sky-700 h-screen flex flex-row">
+      <div className="h-full w-1/3 flex flex-col justify-center pl-10 pb-20">
+        <h2>Sign Up</h2>
+        <p className="w-3/4 mt-2">
+          Creating an account is easy. Sign up using your Google account to link
+          to your YouTube.
+        </p>
+        <GoogleLoginButton onClick={handleGoogleLogin}></GoogleLoginButton>
+      </div>
+      <div className="h-full w-2/3 p-8 flex items-center">
+        <img
+          className="rounded-3xl"
+          src="https://images.unsplash.com/photo-1613294326794-e7c74fe886e2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80"
+        ></img>
+      </div>
 
       {/* Redirect to Dashboard if authenticated */}
       {isAuthenticated && <Navigate to="/dashboard" />}

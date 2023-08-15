@@ -28,11 +28,11 @@
     }
 
     h1 {
-        @apply uppercase text-6xl
+        @apply uppercase text-7xl
     }
 
     h2 {
-        @apply text-5xl
+        @apply text-6xl
     }
 
     p, .Logo {
@@ -45,7 +45,7 @@
     }
 
     .Landing-Section {
-        @apply pb-60
+        @apply h-screen
     }
 
     .Tag {

@@ -4,13 +4,19 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        yellow: {
+          200: "#fff06c",
+        },
+        sky: {
+          700: "#40659a",
+        },
         whitesmoke: "#f0f0f0",
         dimgray: {
           100: "#686868",
           200: "#575757",
         },
         "background-1": "#161616",
-        black: "#000",
+        black: "#161616",
         gainsboro: {
           100: "#d9d9d9",
           200: "rgba(217, 217, 217, 0.3)",
@@ -36,8 +42,11 @@ module.exports = {
         xl: "20px",
         "2xl": "22px",
         "5xl": "24px",
-        "6xl": "25px",
+        "6xl": "50px",
         "16xl": "35px",
+      },
+      margin: {
+        108: "30rem",
       },
     },
   },

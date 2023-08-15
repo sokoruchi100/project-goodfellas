@@ -77,10 +77,9 @@ const CreateCommunityOverlay = ({
   };
 
   const handleSubmitTags = async (communityId) => {
-    const lowerCaseTags = tags.map((tag) => tag.toLowerCase());
     try {
       await axios.post(`/tags/communityTags/${communityId}`, {
-        tags: lowerCaseTags,
+        tags: tags,
       });
       console.log("Tags successfully updated");
     } catch (error) {
