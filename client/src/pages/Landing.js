@@ -3,6 +3,7 @@ import { Link, Navigate } from "react-router-dom"; // Import Link and Redirect f
 import axios from "axios"; // Import axios
 import { useAuth } from "../context/AuthContext";
 import InfoTabs from "../components/InfoTabs";
+import FakeCommunityCard from "../components/FakeCommunityCard";
 
 const Landing = () => {
   const { isAuthenticated, handleAuthentication } = useAuth();
@@ -63,17 +64,51 @@ const Landing = () => {
       </div>
 
       <div className="bg-sky-700 w-full Landing-Section flex">
-        <div className="w-2/5">
-          <div className="bg-gray-700">01</div>
-          <div className="bg-gray-700">02</div>
-          <div className="bg-gray-700">03</div>
+        <div className="w-1/2">
+          <div className="mt-24 ml-32 ">
+            <FakeCommunityCard
+              communityName={"Shroom Zone"}
+              communityPicture={
+                "https://plus.unsplash.com/premium_photo-1691960547805-7143654bd06b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8&auto=format&fit=crop&w=600&q=60"
+              }
+              tags={"mushrooms mycelium music shrooms mystical"}
+              description={
+                "A community for content creators that make mushroom music. Post some of your interesting ideas for mushroom music here!"
+              }
+            ></FakeCommunityCard>
+          </div>
+          <div className="mt-72 ml-8">
+            <FakeCommunityCard
+              communityName={"Shroom Zone"}
+              communityPicture={
+                "https://plus.unsplash.com/premium_photo-1691960547805-7143654bd06b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8&auto=format&fit=crop&w=600&q=60"
+              }
+              tags={"mushrooms mycelium music shrooms mystical"}
+              description={
+                "A community for content creators that make mushroom music. Post some of your interesting ideas for mushroom music here!"
+              }
+            ></FakeCommunityCard>
+          </div>
+          <div className="mt-108 ml-64">
+            <FakeCommunityCard
+              communityName={"Shroom Zone"}
+              communityPicture={
+                "https://plus.unsplash.com/premium_photo-1691960547805-7143654bd06b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8&auto=format&fit=crop&w=600&q=60"
+              }
+              tags={"mushrooms mycelium music shrooms mystical"}
+              description={
+                "A community for content creators that make mushroom music. Post some of your interesting ideas for mushroom music here!"
+              }
+            ></FakeCommunityCard>
+          </div>
         </div>
-        <div className="w-3/5">
+
+        <div className="w-1/2 flex flex-col justify-center">
           <h2>Discover new communities</h2>
           <p className="">
-            Input 4 of your own videos for the artificial intelligence to
-            analyze. All new ideas are personalized around your content, making
-            sure that each idea is still grounded within your content.
+            Reach out to other content creators easily through our public
+            communities. Create private communities for smaller discussions and
+            share your ideas with others.
           </p>
         </div>
       </div>

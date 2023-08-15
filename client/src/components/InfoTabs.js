@@ -5,25 +5,25 @@ const tabsData = [
     title: "Using Your Videos",
     content:
       "Input 4 of your own videos for the artificial intelligence to analyze. All new ideas are personalized around your content, making sure that each idea is still grounded within your content.Content for Tab 1",
-    imageUrl: "path/to/image1.jpg",
+    imageUrl: `${process.env.PUBLIC_URL}/yourvideos.png`,
   },
   {
     title: "Using Other Videos",
     content:
       "The Inspiration Engine will use content that is similar to yours to help create an idea for you. ",
-    imageUrl: "path/to/image2.jpg",
+    imageUrl: `${process.env.PUBLIC_URL}/inspiration.png`,
   },
   {
     title: "Answering Questions",
     content:
       "To get a better idea of what type of content you would like, you will be prompted to answer a few questions.",
-    imageUrl: "path/to/image3.jpg",
+    imageUrl: `${process.env.PUBLIC_URL}/refining.png`,
   },
   {
     title: "Final Product",
     content:
       "Your idea will be generated along with a video, description, keywords, and similar videos that already exist. You also have the options to save it to your vault, or share it with a community!",
-    imageUrl: "path/to/image4.jpg",
+    imageUrl: `${process.env.PUBLIC_URL}/idea.png`,
   },
 ];
 
@@ -49,11 +49,13 @@ function InfoTabs() {
         ))}
       </div>
       <div className="flex flex-row content w-3/4 p-4 bg-gray-800 rounded-2xl h-full">
-        <p className="font-roboto w-1/2">{tabsData[activeTab].content}</p>
+        <p className="font-roboto self-center p-4 w-1/3">
+          {tabsData[activeTab].content}
+        </p>
         <img
           src={tabsData[activeTab].imageUrl}
           alt={tabsData[activeTab].title}
-          className="mb-4 w-1/2"
+          className="w-2/3 m-4 object-cover border border-white rounded-lg"
         />
       </div>
     </div>

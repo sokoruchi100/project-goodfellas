@@ -45,6 +45,9 @@ module.exports = {
         "6xl": "50px",
         "16xl": "35px",
       },
+      margin: {
+        108: "30rem",
+      },
     },
   },
   corePlugins: {
