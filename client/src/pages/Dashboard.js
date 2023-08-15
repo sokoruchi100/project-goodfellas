@@ -56,7 +56,7 @@ function Dashboard() {
       <div className="ml-24 p-4">
         <TagBox tags={tags} setTags={setTags} amount={10} />
         <button
-          className="mt-4 px-2 py-1 text-white text-xl"
+          className="hover:bg-yellow-200 hover:text-black mt-4 px-2 py-1 text-white text-xl"
           onClick={handleSubmitTags}
         >
           Submit Tags

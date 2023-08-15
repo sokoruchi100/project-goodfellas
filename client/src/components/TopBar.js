@@ -27,7 +27,7 @@ const TopBar = () => {
   return (
     <div className="z-10 top-bar right-0 absolute flex flex-row pt-4 pr-8">
       <button
-        className="mr-4 px-2 py-1 self-center text-white text-xl"
+        className="hover:bg-yellow-200 hover:text-black mr-4 px-2 py-1 self-center text-white text-xl"
         onClick={handleLogout}
       >
         Log out

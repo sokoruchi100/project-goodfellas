@@ -6,6 +6,7 @@ import InfoTabs from "../components/InfoTabs";
 import FakeCommunityCard from "../components/FakeCommunityCard";
 import ReviewCard from "../components/ReviewCard";
 import Accordion from "../components/Accordion";
+import Logo from "../components/Logo";
 
 const Landing = () => {
   const { isAuthenticated, handleAuthentication } = useAuth();
@@ -28,11 +29,7 @@ const Landing = () => {
       {isAuthenticated && <Navigate to="/dashboard" />}
       <div className="bg-black Landing-Section flex flex-row">
         <div className="w-full h-full relative">
-          <div className="Logo">
-            <span>VisionVault</span>
-            <span>ICON</span>
-          </div>
-
+          <Logo></Logo>
           <div className="absolute top-1/3 left-[10%] z-10 w-5/12">
             <h1 className="text-7xl">Create new ideas from nothing</h1>
             <p>
@@ -42,7 +39,7 @@ const Landing = () => {
             </p>
             <Link to="/signup">
               <button className="bg-yellow-200 text-black hover:bg-sky-700 hover:text-white mt-10">
-                Generate new ideas
+                Sign Up Now
               </button>
             </Link>
           </div>
@@ -115,7 +112,7 @@ const Landing = () => {
         </div>
       </div>
       <div className="bg-sky-700 w-full Landing-Section flex items-center justify-center">
-        <div className="grid grid-cols-3 space-x-20 p-10 h-full">
+        <div className="grid mt-32 grid-cols-3 gap-x-20 p-10 h-full">
           <ReviewCard
             profilePicture={
               "https://images.unsplash.com/photo-1691836691308-868a5db822c7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0fHx8ZW58MHx8fHx8&auto=format&fit=crop&w=600&q=60"
@@ -143,7 +140,7 @@ const Landing = () => {
         </div>
       </div>
       <div className="bg-sky-700 w-full Landing-Section flex flex-row items-center p-32">
-        <h2 className="w-1/3 text-6xl mb-40">Frequently asked questions</h2>
+        <h2 className="w-1/3 text-6xl mb-96">Frequently asked questions</h2>
         <div className="w-2/3 h-full flex items-center">
           <Accordion />
         </div>
@@ -151,7 +148,7 @@ const Landing = () => {
       <div className="bg-sky-700 w-full pb-64 flex flex-col items-center">
         <h2 className="text-center">Start creating now!</h2>
         <Link to="/signup">
-          <button className="bg-gray-700 mt-10 w-64 py-5">Sign Up</button>
+          <button className="bg-gray-800 mt-10 w-64 py-3">Sign Up</button>
         </Link>
       </div>
       <footer className="bg-black h-16 w-full flex justify-evenly items-center">

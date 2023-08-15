@@ -170,19 +170,16 @@ const Chatroom = () => {
           {messages && <MessagesList messages={messages}></MessagesList>}
           <form
             onSubmit={handleSendMessage}
-            className="w-full absolute bottom-12 px-6"
+            className="w-full bg-black h-1/6 absolute flex items-center px-6"
           >
             <input
               type="text"
               value={newMessage}
               onChange={handleInputChange}
               placeholder="Send a message"
-              className="w-full h-1/6 py-4 px-3 rounded-xl text-lg font-semibold"
+              className="w-full py-4 px-3 rounded-xl text-lg font-semibold"
             />
-            <button
-              type="submit"
-              className="absolute right-4 border-none top-1"
-            >
+            <button type="submit" className="absolute right-4 border-none">
               Send
             </button>
           </form>
