@@ -4,6 +4,7 @@ import axios from "axios"; // Import axios
 import { useAuth } from "../context/AuthContext";
 import InfoTabs from "../components/InfoTabs";
 import FakeCommunityCard from "../components/FakeCommunityCard";
+import ReviewCard from "../components/ReviewCard";
 
 const Landing = () => {
   const { isAuthenticated, handleAuthentication } = useAuth();
@@ -112,10 +113,31 @@ const Landing = () => {
           </p>
         </div>
       </div>
-      <div className="bg-sky-700 w-full grid grid-cols-3 space-x-10 Landing-Section">
-        <div className="text-center bg-gray-700 h-64">01</div>
-        <div className="text-center bg-gray-700 h-64">01</div>
-        <div className="text-center bg-gray-700 h-64">01</div>
+      <div className="bg-sky-700 w-full grid grid-cols-3 space-x-10 Landing-Section p-10">
+        <ReviewCard
+          profilePicture={
+            "https://images.unsplash.com/photo-1691836691308-868a5db822c7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0fHx8ZW58MHx8fHx8&auto=format&fit=crop&w=600&q=60"
+          }
+          userName={"Roacher"}
+          rating={5}
+          reviewText={"Wow this was such a good product i loved it"}
+        ></ReviewCard>
+        <ReviewCard
+          profilePicture={
+            "https://images.unsplash.com/photo-1691836691308-868a5db822c7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0fHx8ZW58MHx8fHx8&auto=format&fit=crop&w=600&q=60"
+          }
+          userName={"Roacher"}
+          rating={5}
+          reviewText={"Wow this was such a good product i loved it"}
+        ></ReviewCard>
+        <ReviewCard
+          profilePicture={
+            "https://images.unsplash.com/photo-1691836691308-868a5db822c7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0fHx8ZW58MHx8fHx8&auto=format&fit=crop&w=600&q=60"
+          }
+          userName={"Roacher"}
+          rating={5}
+          reviewText={"Wow this was such a good product i loved it"}
+        ></ReviewCard>
       </div>
       <div className="bg-sky-700 w-full Landing-Section flex">
         <div className="w-1/2">
