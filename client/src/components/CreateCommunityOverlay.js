@@ -140,7 +140,7 @@ const CreateCommunityOverlay = ({
 
             <div className="h-3/5 my-4 relative">
               <textarea
-                className="w-full h-full bg-gray-400 bg-opacity-50 border rounded-md p-3 placeholder-white outline-none text-white text-base resize-none font-roboto"
+                className="w-full h-full bg-gray-500 bg-opacity-50 border rounded-md p-3 placeholder-white outline-none text-white text-base resize-none font-roboto"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Write a Description"
