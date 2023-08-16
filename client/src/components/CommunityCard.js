@@ -5,7 +5,7 @@ import { arrayToString } from "../utils/TagsUtil";
 function CommunityCard({ community, handleCommunityDeletion, userId }) {
   return (
     <Link to={`/communities/chatroom/${community.roomCode}`}>
-      <div className="p-4 transition-all hover:scale-105 hover:shadow-xl shadow-lg shadow-black bg-gray-900 rounded-lg relative flex flex-col justify-between h-1/3">
+      <div className="p-4 transition-all hover:scale-105 hover:shadow-xl shadow-lg shadow-black bg-gray-900 rounded-lg relative flex flex-col justify-between h-[250px]">
         {/* Tailwind classes for 3 column layout */}
 
         <div className="flex flex-row">

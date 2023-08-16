@@ -164,6 +164,11 @@ const Explore = () => {
         <div className="flex flex-col w-10/12 h-full bg-sky-700">
           {/*HEADER*/}
           <div className="h-1/4 pl-10 pt-10">
+            <img
+              className="w-1/3 h-1/3 absolute z-0 bottom-[76vh] right-[20vw] overflow-x-hidden"
+              alt=""
+              src={`${process.env.PUBLIC_URL}/ellipse133.svg`}
+            />
             <h2 className="text-4xl font-normal my-10">Explore Communities</h2>
             {/* Search Bar */}
             <SearchBar
@@ -175,7 +180,12 @@ const Explore = () => {
 
           {/*MAIN BODY CONTENT*/}
           <div className="h-3/4 bg-black p-10">
-            <div className="grid grid-cols-3 space-x-10 h-full">
+            <img
+              className="w-3/4 h-3/4 absolute z-0 bottom-[0vh] right-[0vw] overflow-x-hidden"
+              alt=""
+              src={`${process.env.PUBLIC_URL}/vector4.svg`}
+            />
+            <div className="grid grid-cols-3 gap-x-10 h-full">
               {/* Render the filtered communities */}
               {Array.isArray(filteredCommunities) &&
                 filteredCommunities.map((community) => (

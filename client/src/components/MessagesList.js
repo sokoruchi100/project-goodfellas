@@ -5,7 +5,10 @@ function MessagesList({ messages }) {
     <div className="h-5/6 bg-black" style={{ overflowY: "auto" }}>
       {messages &&
         messages.map((message, index) => (
-          <div key={index} className="message flex flex-row p-4">
+          <div
+            key={index}
+            className="hover:bg-gray-900 transition message flex flex-row p-4"
+          >
             <div className="flex-shrink-0">
               {message.profilePicture && (
                 <img
