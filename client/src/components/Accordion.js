@@ -25,7 +25,7 @@ function Accordion() {
 
   console.log(accordionData);
   return (
-    <div className="w-full h-full flex flex-col justify-center mb-40">
+    <div className="w-full h-full flex flex-col justify-center mb-40 z-10">
       {accordionData.map((item, index) => {
         // Let's log to see if the data is being read correctly
         return <AccordionItem title={item.title} content={item.content} />;

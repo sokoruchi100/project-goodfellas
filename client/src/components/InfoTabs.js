@@ -31,13 +31,13 @@ function InfoTabs() {
   const [activeTab, setActiveTab] = useState(0); // default to the first tab
 
   return (
-    <div className="infoTabs w-3/4 flex h-1/2 mt-20">
+    <div className="infoTabs w-3/4 flex h-1/2 mt-20 z-10">
       <div className="tabs w-1/4">
         {tabsData.map((tab, index) => (
           <div
             key={index}
             onClick={() => setActiveTab(index)}
-            className={`flex flex-row items-center rounded-2xl font-urbanist tab py-2 px-4 cursor-pointer ${
+            className={`flex border-b border-black shadow-md shadow-black flex-row items-center rounded-2xl font-urbanist tab py-2 px-4 cursor-pointer ${
               index === activeTab ? "bg-gray-800" : "bg-gray-600"
             }`}
           >
@@ -48,7 +48,7 @@ function InfoTabs() {
           </div>
         ))}
       </div>
-      <div className="flex flex-row content w-3/4 p-4 bg-gray-800 rounded-2xl h-full">
+      <div className="flex shadow-md shadow-black flex-row content w-3/4 p-4 bg-gray-800 rounded-2xl h-full">
         <p className="font-roboto self-center p-4 w-1/3">
           {tabsData[activeTab].content}
         </p>

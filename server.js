@@ -56,6 +56,7 @@ const openai = new OpenAIApi(configuration);
 
 // Summarize description
 const descriptionSummarize = async (desc) => {
+  console.log(desc);
   const prompt = `Summarize the following description of a youtube video within two sentences: ${desc}`;
   if (desc.length > 30) {
     try {

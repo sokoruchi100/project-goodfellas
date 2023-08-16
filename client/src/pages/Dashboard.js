@@ -54,6 +54,7 @@ function Dashboard() {
     <div>
       <TopBar />
       <Navbar handleAuthentication={handleAuthentication} />
+<<<<<<< HEAD
       
       <div className="flex ml-24 p-4">
         <div className="flex-initial mt-[100px] pl-12">
@@ -92,6 +93,16 @@ function Dashboard() {
       <button class="text-zinc-100 font-extralight transition ease-in-out delay-150 bg-blue-500 hover:translate-x-5 hover:bg-yellow-200 duration-300 hover:text-zinc-800">
         <a className="transition ease-in-out delay-150 hover:text-zinc-800" href="/inspirationengine">Generate new idea</a>
       </button>
+=======
+      <div className="ml-24 p-4">
+        <TagBox tags={tags} setTags={setTags} amount={10} />
+        <button
+          className="hover:bg-yellow-200 hover:text-black mt-4 px-2 py-1 text-white text-xl"
+          onClick={handleSubmitTags}
+        >
+          Submit Tags
+        </button>
+>>>>>>> 2cd0630cb5b9e4f5f8603ec01197974c815d829b
       </div>
 
         <svg className="-z-1 absolute ml-[700px]" width="270" height="270" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><circle stroke="#40659A" stroke-width=".5" cx="32" cy="32" r="31" fill="none"/></svg>

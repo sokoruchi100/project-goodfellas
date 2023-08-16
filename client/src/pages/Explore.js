@@ -137,7 +137,7 @@ const Explore = () => {
         <div className="flex items-center flex-col h-full w-2/12 bg-gray-900">
           <div className="mb-16 flex justify-center w-5/6 mt-16">
             <button
-              className="font-normal text-white h-12 w-full text-3xl p-0 rounded-xl"
+              className="font-normal text-white h-12 w-full text-3xl p-0 rounded-xl hover:bg-yellow-200 hover:text-black"
               onClick={handleShowCreateCommunityOverlay}
             >
               + Create
@@ -161,7 +161,7 @@ const Explore = () => {
           </div>
         </div>
 
-        <div className="flex flex-col w-10/12 h-full">
+        <div className="flex flex-col w-10/12 h-full bg-sky-700">
           {/*HEADER*/}
           <div className="h-1/4 pl-10 pt-10">
             <h2 className="text-4xl font-normal my-10">Explore Communities</h2>

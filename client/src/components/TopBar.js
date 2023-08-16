@@ -25,9 +25,9 @@ const TopBar = () => {
   };
 
   return (
-    <div className="top-bar right-0 fixed flex flex-row pt-4 pr-8">
+    <div className="top-bar right-0 top-0 fixed flex flex-row pt-4 pr-8">
       <button
-        className="mr-4 px-2 py-1 self-center text-white text-xl"
+        className="hover:bg-yellow-200 hover:text-black mr-4 px-2 py-1 self-center text-white text-xl"
         onClick={handleLogout}
       >
         Log out

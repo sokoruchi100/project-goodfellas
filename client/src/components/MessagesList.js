@@ -2,7 +2,7 @@ import React from "react";
 
 function MessagesList({ messages }) {
   return (
-    <div className="h-5/6" style={{ overflowY: "auto" }}>
+    <div className="h-5/6 bg-black" style={{ overflowY: "auto" }}>
       {messages &&
         messages.map((message, index) => (
           <div key={index} className="message flex flex-row p-4">
@@ -18,7 +18,7 @@ function MessagesList({ messages }) {
 
             <div className="flex flex-col justify-around ml-4">
               <div className="flex flex-row items-baseline">
-                <span className="text-sky-800 font-bold text-2xl">
+                <span className="text-sky-700 font-bold text-2xl">
                   {message.displayName}
                 </span>
                 {/* <span className="ml-2 text-white font-normal text-base">
