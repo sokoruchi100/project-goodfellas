@@ -78,25 +78,29 @@ const Landing = () => {
           </div>
           <div className="mt-72 ml-8">
             <FakeCommunityCard
-              communityName={"Shroom Zone"}
+              communityName={"Digital Visionaries"}
               communityPicture={
-                "https://plus.unsplash.com/premium_photo-1691960547805-7143654bd06b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8&auto=format&fit=crop&w=600&q=60"
+                "https://images.unsplash.com/photo-1634986666676-ec8fd927c23d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZGlnaXRhbCUyMGFydHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=600&q=60"
               }
-              tags={"mushrooms mycelium music shrooms mystical"}
+              tags={
+                "digitalart animationmasters graphicdesign digitalcollab visionarycreations"
+              }
               description={
-                "A community for content creators that make mushroom music. Post some of your interesting ideas for mushroom music here!"
+                "A community dedicated to digital content creators who thrive in the realms of animation, graphics design, and digital art. Join to share, learn, and collaborate with fellow artists on groundbreaking projects."
               }
             ></FakeCommunityCard>
           </div>
           <div className="mt-108 ml-64">
             <FakeCommunityCard
-              communityName={"Shroom Zone"}
+              communityName={"Vloggers' Hub"}
               communityPicture={
-                "https://plus.unsplash.com/premium_photo-1691960547805-7143654bd06b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHx8&auto=format&fit=crop&w=600&q=60"
+                "https://images.unsplash.com/photo-1615860729622-61affadb11f2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8dmxvZ3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=600&q=60"
               }
-              tags={"mushrooms mycelium music shrooms mystical"}
+              tags={
+                "vloglife storytellers dailyadventures lifeoncamera vloggertips"
+              }
               description={
-                "A community for content creators that make mushroom music. Post some of your interesting ideas for mushroom music here!"
+                "The ultimate destination for vloggers and lifestyle creators. Share your daily adventures, exchange tips on storytelling, and connect with vloggers from all corners of the world."
               }
             ></FakeCommunityCard>
           </div>
@@ -115,27 +119,33 @@ const Landing = () => {
         <div className="grid mt-32 grid-cols-3 gap-x-20 p-10 h-full">
           <ReviewCard
             profilePicture={
-              "https://images.unsplash.com/photo-1691836691308-868a5db822c7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0fHx8ZW58MHx8fHx8&auto=format&fit=crop&w=600&q=60"
+              "https://images.unsplash.com/photo-1509773896068-7fd415d91e2e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bmlnaHQlMjBza3l8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=600&q=60"
             }
-            userName={"Roacher"}
+            userName={"LunarLandscapes"}
             rating={5}
-            reviewText={"Wow this was such a good product i loved it"}
+            reviewText={
+              "Before VisionVault, creating new ideas for videos was a major struggle. Finding and analyzing content to create new ideas was often too time consuming and fruitless. Now, I can simply create new ideas with a press of a button!"
+            }
           ></ReviewCard>
           <ReviewCard
             profilePicture={
-              "https://images.unsplash.com/photo-1691836691308-868a5db822c7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0fHx8ZW58MHx8fHx8&auto=format&fit=crop&w=600&q=60"
+              "https://images.unsplash.com/photo-1533711539834-ebcee9ed4975?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=776&q=80"
             }
-            userName={"Roacher"}
+            userName={"BeatStreetJax"}
             rating={5}
-            reviewText={"Wow this was such a good product i loved it"}
+            reviewText={
+              "Not only has VisionVault been helpful in creative pursuits, it has also helped me connect with other aspiring content creators. I now have much more exposure to the Youtube space."
+            }
           ></ReviewCard>
           <ReviewCard
             profilePicture={
-              "https://images.unsplash.com/photo-1691836691308-868a5db822c7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0fHx8ZW58MHx8fHx8&auto=format&fit=crop&w=600&q=60"
+              "https://images.unsplash.com/photo-1666374832858-353a79bd8094?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Z2lybCUyMHdpdGglMjBwbGFudHN8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=600&q=60"
             }
-            userName={"Roacher"}
+            userName={"GreenThumbAria"}
             rating={5}
-            reviewText={"Wow this was such a good product i loved it"}
+            reviewText={
+              "At first I was skeptical. VisionVault just sounds like a ChatGPT clone, but boy was I surprised. While other platforms like VidIQ failed in finding inspiration, VisionVault succeeded in growing my ideas to greater visions."
+            }
           ></ReviewCard>
         </div>
       </div>

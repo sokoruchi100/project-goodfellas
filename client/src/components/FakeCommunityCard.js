@@ -7,7 +7,7 @@ function FakeCommunityCard({
   description,
 }) {
   return (
-    <div className="absolute p-4 shadow-lg shadow-black bg-gray-900 rounded-lg flex flex-col justify-between h-1/3 w-1/3">
+    <div className="absolute transition-all hover:scale-105 hover:shadow-xl shadow-lg shadow-black p-4 bg-gray-900 rounded-lg flex flex-col justify-between h-1/3 w-1/3">
       {/* Tailwind classes for 3 column layout */}
 
       <div className="flex flex-row">

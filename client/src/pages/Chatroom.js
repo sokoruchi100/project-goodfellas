@@ -8,6 +8,10 @@ import { useAuth } from "../context/AuthContext";
 import UserContext from "../context/UserContext";
 import TopBar from "../components/TopBar";
 import MessagesList from "../components/MessagesList";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPaperPlane } from "@fortawesome/free-regular-svg-icons";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 
 const Chatroom = () => {
   const { userId, displayName, profilePicture } = useContext(UserContext);
@@ -162,6 +166,13 @@ const Chatroom = () => {
 
       <div className="chatroom ml-24 flex flex-row h-full">
         <div className="bg-gray-800 h-full w-2/12 p-4">
+          <Link to="/communities/explore">
+            <FontAwesomeIcon
+              className="text-white text-3xl mb-4"
+              icon={faArrowLeft}
+            />
+          </Link>
+
           {communityName && <h2 className="text-3xl mb-10">{communityName}</h2>}
           {isOwner && isRoomPrivate && <AddUserComponent></AddUserComponent>}
         </div>
@@ -179,8 +190,8 @@ const Chatroom = () => {
               placeholder="Send a message"
               className="w-full py-4 px-3 rounded-xl text-lg font-semibold"
             />
-            <button type="submit" className="absolute right-4 border-none">
-              Send
+            <button type="submit" className="absolute right-8 border-none">
+              <FontAwesomeIcon className="text-3xl" icon={faPaperPlane} />
             </button>
           </form>
         </div>

@@ -10,12 +10,12 @@ import {
 const Navbar = () => {
   return (
     <nav className="top-0 left-0 h-full w-24 bg-[#161616] fixed">
-      <Link to="/dashboard" className="absolute">
+      <Link to="/dashboard" className="absolute w-[40px]">
         <img
-            className="absolute top-[16px] left-[27px] w-[40px] h-[50px] object-cover"
-            alt=""
-            src="/visionvaultlogo4-1@2x.png"
-          />
+          className="absolute top-[16px] left-[27px] w-[40px] h-[50px] object-cover"
+          alt=""
+          src={`${process.env.PUBLIC_URL}/visionvaultlogo4-1@2x.png`}
+        />
       </Link>
       <ul className="flex flex-col h-full justify-center p-0">
         <li className="flex justify-center">
