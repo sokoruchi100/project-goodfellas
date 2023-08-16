@@ -12,7 +12,7 @@
 @layer base {
     
     html {
-        @apply bg-[#2F2F2F];
+        @apply bg-[#2F2F2F] overflow-x-hidden;
         font-family: 'Roboto', sans-serif;
     }
 

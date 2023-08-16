@@ -4,7 +4,7 @@ import { faStar } from "@fortawesome/free-regular-svg-icons";
 
 function ReviewCard({ profilePicture, userName, rating, reviewText }) {
   return (
-    <div className="bg-gray-800 shadow-lg shadow-black p-4 rounded transform duration-300 hover:scale-105 hover:shadow-xl transition-all hover:shadow-gray-900 flex flex-col justify-between h-3/4">
+    <div className="z-10 bg-gray-800 shadow-lg shadow-black p-4 rounded transform duration-300 hover:scale-105 hover:shadow-xl transition-all hover:shadow-gray-900 flex flex-col justify-between h-3/4">
       <div>
         <img
           src={profilePicture}

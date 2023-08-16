@@ -24,10 +24,17 @@ const Landing = () => {
   }, [isAuthenticated, handleAuthentication]);
 
   return (
-    <div>
+    <div className="overflow-x-hidden w-full">
       {/* Redirect to Dashboard if authenticated */}
       {isAuthenticated && <Navigate to="/dashboard" />}
-      <div className="bg-black Landing-Section flex flex-row">
+
+      <img
+        className="w-screen h-[100vh*2] absolute z-10"
+        alt=""
+        src={`${process.env.PUBLIC_URL}/vector5.svg`}
+      />
+
+      <div className="bg-black Landing-Section flex flex-row z-0 overflow-x-hidden">
         <div className="w-full h-full relative">
           <Logo></Logo>
           <div className="absolute top-1/3 left-[10%] z-10 w-5/12">
@@ -45,9 +52,9 @@ const Landing = () => {
           </div>
         </div>
 
-        <div className="w-7/12 h-full right-0 bg-white overflow-hidden absolute">
+        <div className="w-7/12 h-full right-0 bg-white overflow-hidden absolute z-0">
           <img
-            className="object-cover"
+            className="object-cover z-0"
             src="https://images.unsplash.com/photo-1605089103010-bcba7ca9b10d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1160&q=80"
           ></img>
         </div>
@@ -61,6 +68,11 @@ const Landing = () => {
         </p>
         <InfoTabs></InfoTabs>
       </div>
+      <img
+        className="w-screen h-[100vh] absolute z-0 top-[150vh] left-[30vw] overflow-x-hidden"
+        alt=""
+        src={`${process.env.PUBLIC_URL}/ellipse131.svg`}
+      />
 
       <div className="bg-sky-700 w-full Landing-Section flex">
         <div className="w-1/2">
@@ -155,6 +167,11 @@ const Landing = () => {
           <Accordion />
         </div>
       </div>
+      <img
+        className="w-screen h-screen absolute z-0 top-[410vh] right-[38vw] overflow-x-hidden"
+        alt=""
+        src={`${process.env.PUBLIC_URL}/ellipse132.svg`}
+      />
       <div className="bg-sky-700 w-full pb-64 flex flex-col items-center">
         <h2 className="text-center">Start creating now!</h2>
         <Link to="/signup">

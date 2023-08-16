@@ -31,7 +31,7 @@ function InfoTabs() {
   const [activeTab, setActiveTab] = useState(0); // default to the first tab
 
   return (
-    <div className="infoTabs w-3/4 flex h-1/2 mt-20">
+    <div className="infoTabs w-3/4 flex h-1/2 mt-20 z-10">
       <div className="tabs w-1/4">
         {tabsData.map((tab, index) => (
           <div
