@@ -55,41 +55,37 @@ const openai = new OpenAIApi(configuration);
 //////////OPEN AI FUNCTIONS/////////////////////////////////////////
 
 // Summarize description
-const descriptionSummarize = async (desc) => {
-  console.log(desc);
-  const prompt = `Summarize the following description of a youtube video within two sentences: ${desc}`;
-  if (desc.length > 30) {
-    try {
-      const completion = await openai.createCompletion({
-        model: "text-davinci-003",
-        prompt: prompt,
-        temperature: 0.7,
-      });
+const videoSummarize = async (desc, title) => {
+  const prompt = `You are a youtube video summarizer. Your goal is to summarize a youtube video using given inputs in a brief and concise paragraph. Keep the summary to around 80 words at most. This is the title:${title} and this the description: ${desc}`;
+  try {
+    const completion = await openai.createChatCompletion({
+      model: "gpt-4",
+      messages: [{ role: "system", content: prompt }],
+      temperature: 0.5,
+      max_tokens: 200,
+    });
 
-      const completion_text = completion.data.choices[0];
+    const completion_text = completion.data.choices[0];
 
-      return completion_text;
-    } catch (error) {
-      if (error.response) {
-        console.log(error.response.status);
-        console.log(error.response.data);
-      } else {
-        console.log(error.message);
-      }
+    return completion_text;
+  } catch (error) {
+    if (error.response) {
+      console.log(error.response.status);
+      console.log(error.response.data);
+    } else {
+      console.log(error.message);
     }
-  } else {
-    return desc;
   }
 };
 
-const getInspired = async (inputedVideo, userTitles, userDescriptions) => {
-  const prompt = `Here is a list of information about my previous videos: { titles: ${userTitles} }. Here is information about a video that I would like to draw inspiration from: { titles: ${inputedVideo.title} }. Using the stated information, generate an attractive title and a well thought out video idea in a paragraph`;
-  console.log("Prompt: ", prompt);
+const getInspired = async (inspirationVideoSummary, userVideoSummaryArray) => {
+  const prompt = `You are an innovative youtube video idea generator that generates new and unique video ideas that follow a similar format to the user's content while also taking some inspiration from a given video. Your goal is to give an engaging title and an engaging summary of the generated idea that makes sense while also being new and creative. Explain why the video is unique compared to content that is already out there and why viewers will engage with the video. Be very specific with the content in the video idea. Use simple language when describing the idea. Do not make the summary too long, try to limit it to around 160 words at most. Here are summaries of videos that the user has made, try to keep a similar format to their content {${userVideoSummaryArray}}. Here is a summary of the about a video that I would like to draw inspiration from: { ${inspirationVideoSummary} }. Output in this exact format Title:"Title goes here". "Description goes here".`;
+  console.log(prompt);
   try {
-    const completion = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: prompt,
-      temperature: 0.7,
+    const completion = await openai.createChatCompletion({
+      model: "gpt-4",
+      messages: [{ role: "system", content: prompt }],
+      temperature: 1,
       max_tokens: 400,
     });
 
@@ -138,7 +134,6 @@ app.use("/api", apiRoutes);
 const upload = multer({ storage: storage });
 
 app.post("/upload", upload.single("image"), (req, res) => {
-  console.log("IMAGE RECEIVED");
   if (req.file) {
     res.json({
       imageUrl: `http://localhost:5000/uploads/${req.file.filename}`,
@@ -162,20 +157,6 @@ app.use("/membership", membershipRoutes);
 app.get("/dist/output.css", (req, res) => {
   res.setHeader("Content-Type", "text/css");
   res.sendFile(path.resolve(__dirname, "dist", "output.css"));
-});
-
-// Get all users from user database
-app.get("/users", (req, res) => {
-  const query = "SELECT * FROM Users";
-
-  con.query(query, (error, result) => {
-    if (error) {
-      console.log("Could not retrieve users from database. ", error);
-      res.status(500).json({ error: "Failed to get users from the database" });
-    } else {
-      res.json(result);
-    }
-  });
 });
 
 process.on("SIGINT", () => {
@@ -231,28 +212,27 @@ app.post("/gpt-api-call", async (req, res) => {
   const { vidDetails, myVidDetails } = req.body;
 
   try {
-    //console.log(req.body);
-    //console.log(myVidDetails.description);
-
     // Get user vid titles and descritpions in an array
-    const userTitles = [];
-    const userDescriptions = [];
+    const userVideoSummaryArray = [];
     for (let i = 0; i < myVidDetails.length; i++) {
-      userTitles.push(myVidDetails[i].title);
-      let newDesc = await descriptionSummarize(myVidDetails[i].description);
-      userDescriptions.push(newDesc.text);
+      let newUserVideoSummary = await videoSummarize(
+        myVidDetails[i].description,
+        myVidDetails[i].title
+      );
+      console.log(newUserVideoSummary.message.content);
+      userVideoSummaryArray.push(newUserVideoSummary.message.content);
     }
-    // Summarize description of inputted video
-    //vidDetails.description = await descriptionSummarize(vidDetails.description).text;
-    console.log(
-      "descriptions: ",
-      userDescriptions,
-      "\nalso\n",
-      vidDetails.description
+    let inspirationVideoSummary = await videoSummarize(
+      vidDetails.description,
+      vidDetails.title
     );
-    const output = await getInspired(vidDetails, userTitles, userDescriptions);
-    console.log("Output:", output.text);
-    res.json(output.text);
+
+    const output = await getInspired(
+      inspirationVideoSummary.message.content,
+      userVideoSummaryArray
+    );
+    console.log("Output:", output.message.content);
+    res.json(output.message.content);
   } catch (error) {}
 });
 

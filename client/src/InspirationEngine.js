@@ -15,17 +15,17 @@ const InspirationEngine = () => {
   const processOutput = (data) => {
     const sentences = data.split(/[.!?]/).map((sentence) => sentence.trim());
     console.log(sentences);
-    console.log(sentences[1]);
+    console.log(sentences[0]);
     // Extract string within quotation marks from the title sentence
-    const titleMatch = sentences[1].match(/"(.*?)"/);
+    const titleMatch = sentences[0].match(/"(.*?)"/);
     console.log(titleMatch);
     if (titleMatch) {
-      setTitle(titleMatch[1]);
+      setTitle(titleMatch[0]);
     }
 
     // Store everything that comes after the title sentence
-    if (sentences.length > 2) {
-      setSummary(sentences.slice(2).join(". ").trim());
+    if (sentences.length > 1) {
+      setSummary(sentences.slice(1).join(". ").trim());
     }
   };
 
@@ -157,7 +157,7 @@ const InspirationEngine = () => {
           />
           <div className="container">
             <button className="mt-24 text-slate-50" onClick={passAllData}>
-              Button
+              Generate Idea
             </button>
           </div>
         </div>
